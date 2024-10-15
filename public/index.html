@@ -1,80 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Chat App</title>
-    <link rel="stylesheet" href="../css/index.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'nonce-randomNonceValue';">
+
+
+  <link rel="stylesheet" href="../css/index.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css">
+
+  <title>Chat App</title>
 </head>
 <body>
-    <div class="content">
-        <!-- Nav pills -->
-        <ul class="nav nav-pills" role="tablist">
-          <li class="nav-item">
-            <a class="nav-link active" data-toggle="pill" href="#login">Login</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" data-toggle="pill" href="#regis">Register</a>
-          </li>
-        </ul>
-    
-        <!-- Tab panes -->
-        <div class="tab-content">
-          <div id="login" class="container tab-pane active">
-            <form>
-              <div class="form-group">
-                <label for="exampleFormControlInput1">Email address</label>
-                <input type="email" class="form-control is-valid" id="exampleFormControlInput1" placeholder="name@example.com">
-                <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-              </div>
-              <div class="form-group">
-                <label for="exampleInputPassword1">Password</label>
-                <input type="password" class="form-control is-invalid" id="exampleInputPassword1" placeholder="Password">
-                <small id="emailHelp" class="form-text text-muted">Password incorrect.</small>
-              </div>
-              <button type="button" class="btn btn-primary" onclick="login()">Submit</button>
-            </form>
-          </div>
-          <div id="regis" class="container tab-pane fade">
-            <form>
-              <div class="form-group">
-                <label for="InputName">Full Name</label>
-                <input type="text" class="form-control is-valid" id="InputName" placeholder="Full Name">
-                <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-              </div>
-              <div class="form-group">
-                <label for="InputUsername">Username</label>
-                <input type="text" class="form-control is-valid" id="InputUsername" placeholder="Username">
-                <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-              </div>
-              <div class="form-group">
-                <label for="exampleFormControlInput2">Email address</label>
-                <input type="email" class="form-control is-valid" id="exampleFormControlInput2" placeholder="name@example.com">
-                <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-              </div>
-              <div class="form-group">
-                <label for="exampleInputPassword2">Password</label>
-                <input type="password" class="form-control is-invalid" id="exampleInputPassword2" placeholder="Password">
-                <small id="emailHelp" class="form-text text-muted">Password incorrect.</small>
-              </div>
-              <div class="form-group">
-                <label for="exampleInputPasswordVer">Verify Password</label>
-                <input type="password" class="form-control is-invalid" id="exampleInputPasswordVer" placeholder="Password">
-              </div>
-              <button type="submit" class="btn btn-primary">Submit</button>
-            </form>
-          </div>
+  <div class="container" id="container">
+    <div class="form-container sign-up-container">
+      <form action="#">
+        <h1>Create Account</h1>
+        <div class="social-container">
+          <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
+          <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+        <span>or use your email for registration</span>
+        <input type="text" placeholder="Name" />
+        <input type="email" placeholder="Email" />
+        <input type="password" placeholder="Password" />
+        <button type="button" class="sign-up-button">Sign Up</button>
+      </form>
+    </div>
+    <div class="form-container sign-in-container">
+      <form action="#">
+        <h1>Sign in</h1>
+        <div class="social-container">
+          <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
+          <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+        <span>or use your account</span>
+        <input type="email" placeholder="Email" />
+        <input type="password" placeholder="Password" />
+        <a href="#">Forgot your password?</a>
+        <button type="button">Sign In</button>
+      </form>
+    </div>
+    <div class="overlay-container">
+      <div class="overlay">
+        <div class="overlay-panel overlay-left">
+          <h1>Welcome Back!</h1>
+          <p>To keep connected with us please login with your personal info</p>
+          <button class="ghost" id="signIn">Sign In</button>
+        </div>
+        <div class="overlay-panel overlay-right">
+          <h1>Hello, Friend!</h1>
+          <p>Enter your personal details and start journey with us</p>
+          <button class="ghost" id="signUp">Sign Up</button>
         </div>
       </div>
+    </div>
+  </div>
 
-      <script>
-        function login() {
-            window.location.href = 'main.html'
-        }
-      </script>
+  <!-- Phần tử để hiển thị thông báo -->
+  <div id="signupMessage" style="display:none; margin-top: 20px; text-align: center;"></div>
+
+  <script>
+    
+    const signUpButton = document.getElementById('signUp');
+    const signInButton = document.getElementById('signIn');
+    const container = document.getElementById('container');
+
+    signUpButton.addEventListener('click', () => {
+      container.classList.add("right-panel-active");
+    });
+
+    signInButton.addEventListener('click', () => {
+      container.classList.remove("right-panel-active");
+    });
+
+    async function signUp() {
+      const name = document.querySelector('.sign-up-container input[type="text"]').value;
+      const email = document.querySelector('.sign-up-container input[type="email"]').value;
+      const password = document.querySelector('.sign-up-container input[type="password"]').value;
+
+      try {
+        const userCredential = await window.firebase.auth.createUserWithEmailAndPassword(email, password);
+        
+        // Lưu thông tin người dùng vào Firestore
+        await window.firebase.firestore.collection('users').doc(userCredential.user.uid).set({
+          name: name,
+          email: email,
+          createdAt: new Date() // Thêm thời gian tạo tài khoản
+        });
+
+        // Đăng ký thành công
+        console.log('Đăng ký thành công:', userCredential.user);
+
+        // Hiển thị thông báo cho người dùng
+        const signupMessage = document.getElementById('signupMessage'); // Sử dụng phần tử đã thêm vào HTML
+        signupMessage.textContent = "Đăng ký thành công! Chào mừng bạn đến với chúng tôi.";
+        signupMessage.style.color = "green"; // Màu xanh cho thông báo thành công
+        signupMessage.style.display = "block"; // Hiển thị thông báo
+      } catch (error) {
+        console.error('Lỗi đăng ký:', error.message);
+
+        // Hiển thị thông báo lỗi
+        const signupMessage = document.getElementById('signupMessage'); // Sử dụng phần tử đã thêm vào HTML
+        signupMessage.textContent = error.message;
+        signupMessage.style.color = "red"; // Màu đỏ cho thông báo lỗi
+        signupMessage.style.display = "block"; // Hiển thị thông báo
+      }
+    }
+
+    document.querySelector('.sign-up-button').addEventListener('click', signUp);
+    // Không có hàm signIn được định nghĩa trong đoạn mã của bạn, bạn cần thêm hàm này nếu muốn đăng nhập
+  </script>
+
 </body>
 </html>

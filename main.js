@@ -1,5 +1,9 @@
-const { app, BrowserWindow } = require('electron')
+import { app, BrowserWindow, ipcMain } from 'electron';
+import { signUp } from './firebase.js'; // Sử dụng import
 
+ipcMain.handle('sign-up', async (event, email, password, name) => {
+    return await signUp(name, email, password);
+});
 function createWindow() {
     const mainWindow = new BrowserWindow({
         width: 1024,

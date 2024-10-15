@@ -2,39 +2,78 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Main Screen</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://unpkg.com/akar-icons-fonts"></script>
     <link rel="stylesheet" href="../css/main.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
 </head>
 <body>
     <div class="sidebar">
-        <div class="sidebarContainer">
-            <a href="#" onclick="loadContent('home.html')"><i class="fas fa-home"></i></a>
-            <a href="#" onclick="loadContent('message.html')"><i class="fa fa-message"></i></a>
-            <a href="#" onclick="loadContent('search.html')"><i class="fas fa-search"></i></a>
-            <a href="#" onclick="loadContent('settings.html')"><i class="fas fa-cog"></i></a>
-        </div>
-        <div class="logoutContainer">
-            <a href="#" onclick="logout()"> <i class="fas fa-sign-out-alt"></i></a>
-        </div>
+        <ul>
+            <li>
+                <a href="#" onclick="loadContent('person.html')">
+                    <i class="ai-person"></i>
+                    <span>Person</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="loadContent('message.html')">
+                    <i class="ai-chat-bubble"></i>
+                    <span>Message</span>
+                </a>
+            </li>    
+            <li>
+                <a href="#" onclick="loadContent('contact.html')">
+                    <i class="ai-phone"></i>
+                    <span>Contact</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="loadContent('todoList.html')">
+                    <i class="ai-check-box"></i>
+                    <span>To-Do</span>
+                </a>
+            </li>    
+            <li>
+                <a href="#" onclick="loadContent('cloud.html')">
+                    <i class="ai-cloud"></i>
+                    <span>Cloud</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="loadContent('notifications.html')">
+                    <i class="ai-bell"></i>
+                    <span>Notifications</span>
+                </a>
+            </li>
+            <li>    
+                <a href="#" onclick="loadContent('settings.html')">
+                    <i class="ai-gear"></i>
+                    <span>Settings</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="loadContent(window.location.href = 'index.html')" oncl>
+                    <i class="ai-sign-out"></i>
+                    <span>Sign out</span>
+                </a>
+            </li>
+        </ul>
     </div>
     
-
     <div class="content">
         <iframe id="mainContent" src="home.html"></iframe>
     </div>
 
     <script>
         function loadContent(page) {
-            document.getElementById('mainContent').src = page;
+            const iframe = document.getElementById('mainContent');
+            iframe.src = page;
 
-            const links = document.querySelectorAll('.sidebarContainer a');
+            const links = document.querySelectorAll('.sidebar a');
             links.forEach(link => link.classList.remove('active'));
-            document.querySelector(`a[onclick="loadContent('${page}')"]`).classList.add('active');
-        }
-
-        function logout() {
-            window.location.href = 'index.html';
+            // document.querySelector(`a[onclick="loadContent('${page}')"]`).classList.add('active');
         }
     </script>
 </body>
