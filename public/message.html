@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/message.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Chat Application</title>
+</head>
+<body>
+    <div class="mainContent">
+        <div class="left">
+            <div class="form__group field">
+                <input type="input" class="form__field" placeholder="Search" name="name" id='name' required />
+                <label for="name" class="form__label">Search</label>
+              </div>
+            <div class="a-tag">
+                <div>
+                    <a href="#" onclick="showContent('allChat')">All chat</a>
+                </div>
+                <div>
+                    <a href="#" onclick="showContent('groupChat')">Group chat</a>
+                </div>
+                <div>
+                    <a href="#" onclick="showContent('important')">Important</a>
+                </div>
+            </div>
+            <div class="leftContent">
+                <div id="contentArea" class="content" >
+                    
+                </div>
+            </div>
+        </div>
+        <div class="right">
+            <div class="header">
+                <p>
+                    <span id="username">Username</span>
+                    <span id="status"><i class="fa-solid fa-circle"></i></span>
+                    <span id="lastSeen" hidden>lastSeen</span>
+                </p>
+                <div class="headerIcon">
+                    <a href="#"><i class="fa fa-magnifying-glass"></i></a>
+                    <a href="#"><i class="fa fa-ellipsis"></i></a>
+                </div>
+            </div>
+            <div class="rightContent">
+                <p>Chat content</p>
+            </div>
+            <div class="rightFooter">
+                <div class="chatFunction">function</div>
+                <div class="chatInput">chat</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showContent(type) {
+            const contentArea = document.getElementById('contentArea');
+            let content = '';
+
+            if (type === 'allChat') {
+                content = `
+                    <h2>All Chat</h2>
+                `;
+            } else if (type === 'groupChat') {
+                content = `
+                    <h2>Group Chat</h2>
+                `;
+            } else if (type === 'important') {
+                content = `
+                    <h2>Important</h2>
+                `;
+            }
+
+            contentArea.innerHTML = content;
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            showContent('allChat');
+        });
+    </script>
+</body>
+</html>
