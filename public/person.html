@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thông tin người dùng</title>
+    <link rel="stylesheet" href="../css/person.css">
+</head>
+<body>
+    <div class="container" id="userInfoContainer">
+        <h1>Thông tin người dùng</h1>
+        <div id="userInfo" class="user-info"></div>
+        <button class="btn" id="updateButton">Cập nhật thông tin</button>
+        <div class="update-form" id="updateForm" style="display: none;"> <!-- Đặt mặc định là không hiển thị -->
+            <h2>Cập nhật thông tin</h2>
+            <input type="text" id="name" placeholder="Tên người dùng" value="">
+            <input type="date" id="birthDate" placeholder="Ngày sinh" value="">
+            <select id="gender">
+                <option value="">Chọn giới tính</option>
+                <option value="male">Nam</option>
+                <option value="female">Nữ</option>
+                <option value="other">Khác</option>
+            </select>
+            <input type="file" id="avatar" accept="image/*">
+            <button class="btn" id="saveButton">Lưu thông tin</button>
+        </div>
+    </div>
+
+    <script>
+        const userInfoContainer = document.getElementById('userInfo');
+        const updateButton = document.getElementById('updateButton');
+        const updateForm = document.getElementById('updateForm');
+        const saveButton = document.getElementById('saveButton');
+        let currentUser = {};
+
+        const getUserInfo = async () => {
+            const token = localStorage.getItem('token');
+
+            if (!token) {
+                alert('Vui lòng đăng nhập trước khi truy cập thông tin.');
+                window.location.href = 'index.html'; // Quay về trang đăng nhập nếu không có token
+                return;
+            }
+
+            try {
+                const res = await fetch('http://localhost:5000/api/users/me', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (res.ok) {
+                    currentUser = await res.json();
+                    displayUserInfo(currentUser);
+                } else {
+                    const errorMsg = await res.json();
+                    alert(errorMsg.message || 'Không thể lấy thông tin người dùng.');
+                    window.location.href = 'index.html'; // Quay về trang đăng nhập nếu không có quyền
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        };
+
+        const displayUserInfo = (user) => {
+            const avatarUrl = user.avatar ? `http://localhost:5000/${user.avatar.replace(/\\/g, '/')}` : 'default-avatar.png';
+            userInfoContainer.innerHTML = `
+                <img id="userAvatar" src="${avatarUrl}" alt="Avatar">
+                <p><strong>Tên:</strong> ${user.name || 'Chưa có thông tin'}</p>
+                <p><strong>Ngày sinh:</strong> ${user.birthDate ? new Date(user.birthDate).toLocaleDateString() : 'Chưa có thông tin'}</p>
+                <p><strong>Giới tính:</strong> ${user.gender || 'Chưa có thông tin'}</p>
+            `;
+        }
+
+        updateButton.addEventListener('click', () => {
+            updateForm.style.display = updateForm.style.display === 'none' ? 'block' : 'none';
+            if (updateForm.style.display === 'block') {
+                // Gán giá trị hiện tại vào các trường
+                document.getElementById('name').value = currentUser.name || '';
+                document.getElementById('birthDate').value = currentUser.birthDate || '';
+                document.getElementById('gender').value = currentUser.gender || '';
+            }
+        });
+
+        saveButton.addEventListener('click', async () => {
+            const token = localStorage.getItem('token');
+            const name = document.getElementById('name').value || currentUser.name;
+            const birthDate = document.getElementById('birthDate').value || currentUser.birthDate;
+            const gender = document.getElementById('gender').value || currentUser.gender;
+            const avatar = document.getElementById('avatar').files[0];
+
+            const formData = new FormData();
+            if (name !== currentUser.name) formData.append('name', name);
+            if (birthDate !== currentUser.birthDate) formData.append('birthDate', birthDate);
+            if (gender !== currentUser.gender) formData.append('gender', gender);
+            if (avatar) formData.append('avatar', avatar);
+
+            if (formData.has('name') || formData.has('birthDate') || formData.has('gender') || formData.has('avatar')) {
+                try {
+                    const res = await fetch('http://localhost:5000/api/users/update', {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: formData,
+                    });
+
+                    if (res.ok) {
+                        const updatedUser = await res.json();
+                        currentUser = updatedUser;
+                        displayUserInfo(updatedUser);
+                        updateForm.style.display = 'none';
+                        alert('Cập nhật thông tin thành công!'); // Thông báo cập nhật thành công
+                        location.reload()
+                    } else {
+                        const errorMsg = await res.json();
+                        alert(errorMsg.message || 'Cập nhật thông tin không thành công.');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            } else {
+                alert('Không có thông tin nào để cập nhật.');
+            }
+        });
+
+        getUserInfo();
+    </script>
+</body>
+</html>

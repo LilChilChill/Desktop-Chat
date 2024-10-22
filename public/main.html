@@ -54,7 +54,7 @@
                 </a>
             </li>
             <li>
-                <a href="#" onclick="loadContent(window.location.href = 'index.html')" oncl>
+                <a href="#" onclick="logout()" oncl>
                     <i class="ai-sign-out"></i>
                     <span>Sign out</span>
                 </a>
@@ -73,8 +73,12 @@
 
             const links = document.querySelectorAll('.sidebar a');
             links.forEach(link => link.classList.remove('active'));
-            // document.querySelector(`a[onclick="loadContent('${page}')"]`).classList.add('active');
         }
+
+        function logout() {
+        localStorage.removeItem('token');
+        window.location.href = 'index.html'; 
+    }
     </script>
 </body>
 </html>

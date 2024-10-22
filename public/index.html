@@ -3,9 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'nonce-randomNonceValue';">
-
-
   <link rel="stylesheet" href="../css/index.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css">
 
@@ -14,7 +11,7 @@
 <body>
   <div class="container" id="container">
     <div class="form-container sign-up-container">
-      <form action="#">
+      <form id="signUpForm">
         <h1>Create Account</h1>
         <div class="social-container">
           <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
@@ -22,14 +19,14 @@
           <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
         </div>
         <span>or use your email for registration</span>
-        <input type="text" placeholder="Name" />
-        <input type="email" placeholder="Email" />
-        <input type="password" placeholder="Password" />
-        <button type="button" class="sign-up-button">Sign Up</button>
+        <input type="text" id="name" placeholder="Name" required />
+        <input type="email" id="email" placeholder="Email" required />
+        <input type="password" id="password" placeholder="Password" required />
+        <button type="submit" class="sign-up-button">Sign Up</button>
       </form>
     </div>
     <div class="form-container sign-in-container">
-      <form action="#">
+      <form id="signInForm">
         <h1>Sign in</h1>
         <div class="social-container">
           <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
@@ -37,10 +34,10 @@
           <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
         </div>
         <span>or use your account</span>
-        <input type="email" placeholder="Email" />
-        <input type="password" placeholder="Password" />
+        <input type="email" id="signInEmail" placeholder="Email" required />
+        <input type="password" id="signInPassword" placeholder="Password" required />
         <a href="#">Forgot your password?</a>
-        <button type="button">Sign In</button>
+        <button type="submit">Sign In</button>
       </form>
     </div>
     <div class="overlay-container">
@@ -59,11 +56,7 @@
     </div>
   </div>
 
-  <!-- Phần tử để hiển thị thông báo -->
-  <div id="signupMessage" style="display:none; margin-top: 20px; text-align: center;"></div>
-
   <script>
-    
     const signUpButton = document.getElementById('signUp');
     const signInButton = document.getElementById('signIn');
     const container = document.getElementById('container');
@@ -76,42 +69,65 @@
       container.classList.remove("right-panel-active");
     });
 
-    async function signUp() {
-      const name = document.querySelector('.sign-up-container input[type="text"]').value;
-      const email = document.querySelector('.sign-up-container input[type="email"]').value;
-      const password = document.querySelector('.sign-up-container input[type="password"]').value;
+    // Xử lý đăng ký
+    const signUpForm = document.getElementById('signUpForm');
+    signUpForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
 
       try {
-        const userCredential = await window.firebase.auth.createUserWithEmailAndPassword(email, password);
-        
-        // Lưu thông tin người dùng vào Firestore
-        await window.firebase.firestore.collection('users').doc(userCredential.user.uid).set({
-          name: name,
-          email: email,
-          createdAt: new Date() // Thêm thời gian tạo tài khoản
+        const res = await fetch('http://localhost:5000/api/users/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ name, email, password })
         });
+        const data = await res.json();
 
-        // Đăng ký thành công
-        console.log('Đăng ký thành công:', userCredential.user);
-
-        // Hiển thị thông báo cho người dùng
-        const signupMessage = document.getElementById('signupMessage'); // Sử dụng phần tử đã thêm vào HTML
-        signupMessage.textContent = "Đăng ký thành công! Chào mừng bạn đến với chúng tôi.";
-        signupMessage.style.color = "green"; // Màu xanh cho thông báo thành công
-        signupMessage.style.display = "block"; // Hiển thị thông báo
+        if (res.ok) {
+          alert('Đăng ký thành công!');
+          console.log(data); // Có thể lưu token nếu cần
+          window.location.href = 'index.html'; 
+        } else {
+          alert(data);
+        }
       } catch (error) {
-        console.error('Lỗi đăng ký:', error.message);
-
-        // Hiển thị thông báo lỗi
-        const signupMessage = document.getElementById('signupMessage'); // Sử dụng phần tử đã thêm vào HTML
-        signupMessage.textContent = error.message;
-        signupMessage.style.color = "red"; // Màu đỏ cho thông báo lỗi
-        signupMessage.style.display = "block"; // Hiển thị thông báo
+        console.error('Error:', error);
       }
-    }
+    });
 
-    document.querySelector('.sign-up-button').addEventListener('click', signUp);
-    // Không có hàm signIn được định nghĩa trong đoạn mã của bạn, bạn cần thêm hàm này nếu muốn đăng nhập
+    // Xử lý đăng nhập
+    const signInForm = document.getElementById('signInForm');
+    signInForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('signInEmail').value;
+      const password = document.getElementById('signInPassword').value;
+
+      try {
+        const res = await fetch('http://localhost:5000/api/users/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+
+        if (res.ok) {
+          alert('Đăng nhập thành công!');
+          localStorage.setItem('token', data.token);
+          window.location.href = 'main.html';
+          console.log("token: " + data.token);
+        } else {
+          alert(data);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    });
   </script>
 
 </body>
