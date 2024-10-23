@@ -22,10 +22,10 @@ body {
 	margin-right: auto;
 	background-color: #05043e;
 	display: flex;
-  height: 100%;
+  	height: 100%;
 	flex-direction: column;
 	justify-content: space-between;
-	padding: .75rem;
+	padding: 1rem;
 	position: fixed;
 	box-shadow: 0 10px 50px 0 rgba(#05043e, .25);
 }
@@ -61,7 +61,7 @@ li + li {
 	}
 	
 	.sidebar a i {
-		font-size: 1.375rem;
+		font-size: 2rem;
 	}
 	
 	span {

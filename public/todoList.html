@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/friendList.css">
+    <title>Danh sách bạn bè</title>
+    <style>
+        
+    </style>
+</head>
+<body>
+    <h1>Danh sách bạn bè</h1>
+    <div class="friend-list" id="friendList">
+        <!-- Danh sách bạn bè sẽ được hiển thị ở đây -->
+    </div>
+
+    <script>
+        const friendList = document.getElementById('friendList');
+    
+        // Hàm lấy danh sách bạn bè
+        const getFriends = async () => {
+            const token = localStorage.getItem('token'); 
+    
+            if (!token) {
+                friendList.innerHTML = '<p>Vui lòng đăng nhập để xem danh sách bạn bè.</p>';
+                return;
+            }
+    
+            try {
+                const response = await fetch('http://localhost:5000/api/users/friends', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+    
+                if (!response.ok) {
+                    const errorMessage = await response.json();
+                    friendList.innerHTML = errorMessage.message || 'Có lỗi xảy ra khi lấy danh sách bạn bè.';
+                    return;
+                }
+    
+                const friends = await response.json();
+    
+                if (friends.length === 0) {
+                    friendList.innerHTML = '<p>Không có bạn bè nào.</p>';
+                } else {
+                    friendList.innerHTML = ''; // Đảm bảo danh sách được làm mới
+                    friends.forEach(friend => {
+                        const friendItem = document.createElement('div');
+                        friendItem.classList.add('friend-item');
+                        friendItem.innerHTML = `
+                            <img src="http://localhost:5000/${friend.avatar || 'default-avatar.png'}" alt="${friend.name}">
+                            <span>${friend.name}</span>
+                            <button class="remove-friend" data-id="${friend._id}">Xóa</button>
+                        `;
+
+                        friendList.appendChild(friendItem);
+                        console.log(`Avatar URL: ${friend.avatar || '../img/default-avatar.png'}`);
+
+                    });
+                }
+            } catch (err) {
+                console.error('Có lỗi xảy ra khi lấy danh sách bạn bè:', err);
+                friendList.innerHTML = 'Có lỗi xảy ra khi lấy danh sách bạn bè.';
+                console.log(`Avatar URL: ${friend.avatar || '../img/default-avatar.png'}`);
+
+            }
+        };
+    
+        // Hàm xóa bạn bè
+        const removeFriend = async (friendId) => {
+            const token = localStorage.getItem('token');
+    
+            try {
+                const response = await fetch(`http://localhost:5000/api/users/friends/${friendId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+    
+                if (!response.ok) {
+                    const errorMessage = await response.json();
+                    alert(errorMessage.message || 'Có lỗi xảy ra khi xóa bạn bè.');
+                    return;
+                }
+    
+                // Cập nhật lại danh sách bạn bè sau khi xóa
+                alert('Đã xóa bạn thành công');
+                getFriends(); // Lấy lại danh sách bạn bè
+            } catch (err) {
+                console.error('Có lỗi xảy ra khi xóa bạn bè:', err);
+                alert('Có lỗi xảy ra khi xóa bạn bè.');
+            }
+        };
+    
+        // Thêm sự kiện cho nút xóa bạn bè
+        friendList.addEventListener('click', (event) => {
+            if (event.target.classList.contains('remove-friend')) {
+                const friendId = event.target.getAttribute('data-id');
+                removeFriend(friendId);
+            }
+        });
+    
+        // Gọi hàm để lấy danh sách bạn bè khi trang được tải
+        window.onload = getFriends;
+    </script>
+</body>
+</html>

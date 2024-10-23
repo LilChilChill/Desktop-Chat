@@ -1,0 +1,74 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background: url('../img/f12.jpg') no-repeat center center fixed;
+    background-size: cover;
+}
+h1 {
+    text-align: center;
+    color: #fff;
+}
+.search-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+input[type="text"] {
+    padding: 10px;
+    width: 300px;
+    border: none;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+button {
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+button:hover {
+    background-color: #0056b3;
+}
+.user-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.user-item {
+    background: white;
+    padding: 15px;
+    margin: 10px;
+    border-radius: 5px;
+    width: 300px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+.notification {
+    color: green;
+    text-align: center;
+    margin-top: 20px;
+    display: none;
+}
+.error {
+    color: red;
+    text-align: center;
+    margin-top: 20px;
+    display: none;
+}
+
+#avatar{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.userName{
+    display: flex;
+    align-items: center;
+}

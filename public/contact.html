@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/addFriend.css">
+    <title>Tìm kiếm bạn bè</title>
+</head>
+<body>
+    <h1>Tìm kiếm bạn bè</h1>
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Tìm kiếm...">
+        <button id="searchButton">Tìm kiếm</button>
+    </div>
+    <div class="user-list" id="userList">
+    </div>
+    <div class="notification" id="notification"></div>
+    <div class="error" id="error"></div>
+
+    <script>
+        const searchButton = document.getElementById('searchButton');
+        const searchInput = document.getElementById('searchInput');
+        const userList = document.getElementById('userList');
+        const notification = document.getElementById('notification');
+        const error = document.getElementById('error');
+
+        // Hàm tìm kiếm người dùng
+        const searchUsers = async () => {
+            const query = searchInput.value.trim(); // Lấy giá trị từ input
+            userList.innerHTML = ''; // Xóa kết quả trước đó
+            notification.style.display = 'none'; // Ẩn thông báo
+            error.style.display = 'none'; // Ẩn lỗi
+
+            if (!query) {
+                error.innerHTML = 'Vui lòng nhập tên để tìm kiếm.';
+                error.style.display = 'block';
+                return;
+            }
+
+            const token = localStorage.getItem('token'); // Lấy token từ local storage
+
+            if (!token) {
+                error.innerHTML = 'Vui lòng đăng nhập để thực hiện hành động này.'; // Thêm kiểm tra token
+                error.style.display = 'block';
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://localhost:5000/api/users/search?query=${query}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    const errorMessage = await response.json();
+                    error.innerHTML = errorMessage.message;
+                    error.style.display = 'block';
+                    return;
+                }
+
+                const users = await response.json();
+
+                if (users.length === 0) {
+                    userList.innerHTML = '<p>Không tìm thấy người dùng nào.</p>';
+                } else {
+                    users.forEach(user => {
+                        const userItem = document.createElement('div');
+                        userItem.classList.add('user-item');
+                        userItem.innerHTML = `
+                            <div class='userName'> 
+                                <img src="http://localhost:5000/${user.avatar || 'default-avatar.png'}" alt="${user.name}" id="avatar">
+                                <span>${user.name}</span>    
+                            </div>
+                            <button onclick="addFriend('${user._id}')">Thêm bạn</button>
+                        `;
+                        userList.appendChild(userItem);
+                    });
+                }
+            } catch (error) {
+                console.error(error);
+                error.innerHTML = 'Có lỗi xảy ra trong quá trình tìm kiếm.';
+                error.style.display = 'block';
+            }
+        };
+
+        // Hàm thêm bạn
+        const addFriend = async (receiverId) => {
+            notification.style.display = 'none'; // Ẩn thông báo cũ
+            error.style.display = 'none'; // Ẩn lỗi cũ
+
+            const token = localStorage.getItem('token'); // Lấy token từ local storage
+
+            if (!token) {
+                error.innerHTML = 'Vui lòng đăng nhập để thực hiện hành động này.'; // Thêm kiểm tra token
+                error.style.display = 'block';
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://localhost:5000/api/friends/add`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ receiverId }) // Gửi ID của người dùng để thêm bạn
+                });
+
+                if (response.ok) {
+                    notification.innerHTML = `Đã gửi lời mời kết bạn tới người dùng ID: ${receiverId}`;
+                    notification.style.display = 'block';
+                } else {
+                    const errorMessage = await response.json();
+                    error.innerHTML = `Lỗi: ${errorMessage.message}`;
+                    error.style.display = 'block';
+                }
+            } catch (error) {
+                console.error(error);
+                error.innerHTML = 'Có lỗi xảy ra khi gửi lời mời kết bạn.';
+                error.style.display = 'block';
+            }
+        };
+
+        // Thêm sự kiện cho nút tìm kiếm
+        searchButton.addEventListener('click', searchUsers);
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                searchUsers();
+            }
+        });
+    </script>
+</body>
+</html>

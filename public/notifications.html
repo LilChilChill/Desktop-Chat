@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/notification.css">
+    <title>Danh sách lời mời kết bạn</title>
+</head>
+<body>
+    <h1>Danh sách lời mời kết bạn</h1>
+    <div class="notification" id="notification"></div>
+    <div class="error" id="error"></div>
+    <div class="friend-request-list" id="friendRequestList">
+        <!-- Lời mời kết bạn sẽ được hiển thị ở đây -->
+    </div>
+
+    <script>
+        const friendRequestList = document.getElementById('friendRequestList');
+        const notification = document.getElementById('notification');
+        const error = document.getElementById('error');
+
+        // Hàm lấy danh sách lời mời kết bạn
+        const getFriendRequests = async () => {
+            const token = localStorage.getItem('token'); // Lấy token từ local storage
+
+            // Reset nội dung và ẩn thông báo lỗi
+            friendRequestList.innerHTML = '';
+            notification.style.display = 'none';
+            error.style.display = 'none';
+
+            if (!token) {
+                error.innerHTML = 'Vui lòng đăng nhập để xem danh sách lời mời kết bạn.';
+                error.style.display = 'block';
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:5000/api/friends/requests', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    const errorMessage = await response.json();
+                    error.innerHTML = errorMessage.message || 'Có lỗi xảy ra khi lấy danh sách lời mời.';
+                    error.style.display = 'block';
+                    return;
+                }
+
+                const requests = await response.json();
+
+                if (requests.length === 0) {
+                    friendRequestList.innerHTML = '<p>Không có lời mời nào.</p>';
+                } else {
+                    requests.forEach(request => {
+                        const requestItem = document.createElement('div');
+                        requestItem.classList.add('friend-request-item');
+                        requestItem.innerHTML = `
+                            <span>${request.sender.name}</span>
+                            <div>
+                                <button class="accept-button" onclick="acceptFriendRequest('${request._id}')">Chấp nhận</button>
+                                <button class="decline-button" onclick="rejectFriendRequest('${request._id}')">Từ chối</button>
+                            </div>
+                        `;
+                        friendRequestList.appendChild(requestItem);
+                    });
+                }
+            } catch (err) {
+                console.error(err);
+                error.innerHTML = 'Có lỗi xảy ra khi lấy danh sách lời mời.';
+                error.style.display = 'block';
+            }
+        };
+
+        // Hàm chấp nhận lời mời kết bạn
+        const acceptFriendRequest = async (requestId) => {
+            notification.style.display = 'none'; // Ẩn thông báo cũ
+            error.style.display = 'none';        // Ẩn thông báo lỗi cũ
+
+            const token = localStorage.getItem('token'); // Lấy token từ local storage
+
+            if (!token) {
+                error.innerHTML = 'Vui lòng đăng nhập để thực hiện hành động này.';
+                error.style.display = 'block';
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://localhost:5000/api/friends/accept/${requestId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    notification.innerHTML = 'Đã chấp nhận lời mời kết bạn.';
+                    notification.style.display = 'block';
+                    getFriendRequests(); // Tải lại danh sách lời mời
+                } else {
+                    const errorMessage = await response.json();
+                    error.innerHTML = `Lỗi: ${errorMessage.message}`;
+                    error.style.display = 'block';
+                }
+            } catch (err) {
+                console.error(err);
+                error.innerHTML = 'Có lỗi xảy ra khi chấp nhận lời mời.';
+                error.style.display = 'block';
+            }
+        };
+
+        // Hàm từ chối lời mời kết bạn
+        const rejectFriendRequest = async (requestId) => {
+            notification.style.display = 'none'; // Ẩn thông báo cũ
+            error.style.display = 'none';        // Ẩn thông báo lỗi cũ
+
+            const token = localStorage.getItem('token'); // Lấy token từ local storage
+
+            if (!token) {
+                error.innerHTML = 'Vui lòng đăng nhập để thực hiện hành động này.';
+                error.style.display = 'block';
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://localhost:5000/api/friends/decline/${requestId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    notification.innerHTML = 'Đã từ chối lời mời kết bạn.';
+                    notification.style.display = 'block';
+                    getFriendRequests(); // Tải lại danh sách lời mời
+                } else {
+                    const errorMessage = await response.json();
+                    error.innerHTML = `Lỗi: ${errorMessage.message}`;
+                    error.style.display = 'block';
+                }
+            } catch (err) {
+                console.error(err);
+                error.innerHTML = 'Có lỗi xảy ra khi từ chối lời mời.';
+                error.style.display = 'block';
+            }
+        };
+
+        // Gọi hàm để lấy danh sách lời mời khi trang được tải
+        window.onload = getFriendRequests;
+    </script>
+</body>
+</html>
