@@ -189,9 +189,58 @@ body {
   flex-direction: column;
 }
 
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
 #avatar {
   width: 40px;
   height: 40px;
   border-radius: 50%;
   margin-right: 10px;
+}
+
+.loading {
+  text-align: center;
+  font-size: 1.2rem;
+}
+.chatUser {
+  cursor: pointer;
+}
+.message {
+  display: flex;
+  align-items: center;
+  margin: 10px 0; /* Khoảng cách giữa các tin nhắn */
+}
+
+.message.received {
+  justify-content: flex-start; /* Tin nhắn của người nhận ở bên trái */
+}
+
+.message.sent {
+  justify-content: flex-end; /* Tin nhắn của người gửi ở bên phải */
+}
+
+.avatar {
+  width: 40px; /* Kích thước của avatar */
+  height: 40px; /* Kích thước của avatar */
+  border-radius: 50%; /* Làm tròn avatar */
+  margin-right: 10px; /* Khoảng cách giữa avatar và nội dung tin nhắn */
+}
+
+.messageContent {
+  max-width: 70%; /* Độ rộng tối đa của nội dung tin nhắn */
+  padding: 10px; /* Đệm bên trong cho nội dung */
+  border-radius: 10px; /* Làm tròn các góc */
+}
+
+.received .messageContent {
+  background-color: #f1f1f1; /* Màu nền cho tin nhắn nhận */
+}
+
+.sent .messageContent {
+  background-color: #f1f1f1; /* Màu nền cho tin nhắn gửi */
 }
