@@ -24,12 +24,11 @@
         const notification = document.getElementById('notification');
         const error = document.getElementById('error');
 
-        // Hàm tìm kiếm người dùng
         const searchUsers = async () => {
-            const query = searchInput.value.trim(); // Lấy giá trị từ input
-            userList.innerHTML = ''; // Xóa kết quả trước đó
-            notification.style.display = 'none'; // Ẩn thông báo
-            error.style.display = 'none'; // Ẩn lỗi
+            const query = searchInput.value.trim()
+            userList.innerHTML = ''
+            notification.style.display = 'none'
+            error.style.display = 'none'
 
             if (!query) {
                 error.innerHTML = 'Vui lòng nhập tên để tìm kiếm.';
@@ -37,10 +36,10 @@
                 return;
             }
 
-            const token = localStorage.getItem('token'); // Lấy token từ local storage
+            const token = localStorage.getItem('token'); 
 
             if (!token) {
-                error.innerHTML = 'Vui lòng đăng nhập để thực hiện hành động này.'; // Thêm kiểm tra token
+                error.innerHTML = 'Vui lòng đăng nhập để thực hiện hành động này.'; 
                 error.style.display = 'block';
                 return;
             }
@@ -85,15 +84,15 @@
             }
         };
 
-        // Hàm thêm bạn
+        
         const addFriend = async (receiverId) => {
-            notification.style.display = 'none'; // Ẩn thông báo cũ
-            error.style.display = 'none'; // Ẩn lỗi cũ
+            notification.style.display = 'none'; 
+            error.style.display = 'none'; 
 
-            const token = localStorage.getItem('token'); // Lấy token từ local storage
+            const token = localStorage.getItem('token'); 
 
             if (!token) {
-                error.innerHTML = 'Vui lòng đăng nhập để thực hiện hành động này.'; // Thêm kiểm tra token
+                error.innerHTML = 'Vui lòng đăng nhập để thực hiện hành động này.'; 
                 error.style.display = 'block';
                 return;
             }
@@ -105,12 +104,13 @@
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ receiverId }) // Gửi ID của người dùng để thêm bạn
+                    body: JSON.stringify({ receiverId }) 
                 });
 
                 if (response.ok) {
                     notification.innerHTML = `Đã gửi lời mời kết bạn tới người dùng ID: ${receiverId}`;
                     notification.style.display = 'block';
+                    
                 } else {
                     const errorMessage = await response.json();
                     error.innerHTML = `Lỗi: ${errorMessage.message}`;
@@ -123,7 +123,7 @@
             }
         };
 
-        // Thêm sự kiện cho nút tìm kiếm
+        
         searchButton.addEventListener('click', searchUsers);
         searchInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {

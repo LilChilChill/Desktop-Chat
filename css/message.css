@@ -43,6 +43,17 @@ body {
   font-size: 16px;
 }
 
+.user-info{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-info-status{
+  display: flex;
+  flex-direction: column;
+}
+
 .form__label {
   display: none;
 }
@@ -129,6 +140,8 @@ body {
 }
 
 .chatInput {
+  display: flex;
+  flex-direction: row;
   flex-grow: 1;
   margin-left: 10px;
 }
@@ -139,6 +152,19 @@ body {
   border: 1px solid #ddd;
   border-radius: 5px;
   font-size: 16px;
+}
+
+#sendButton {
+  width: auto;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+#sendButton:hover{
+  background-color: #b8b8b8;
+  cursor: pointer;
 }
 
 .message {
@@ -213,34 +239,48 @@ body {
 .message {
   display: flex;
   align-items: center;
-  margin: 10px 0; /* Khoảng cách giữa các tin nhắn */
+  margin: 10px 0; 
 }
 
 .message.received {
-  justify-content: flex-start; /* Tin nhắn của người nhận ở bên trái */
+  justify-content: flex-start; 
 }
 
 .message.sent {
-  justify-content: flex-end; /* Tin nhắn của người gửi ở bên phải */
+  justify-content: flex-end; 
 }
 
 .avatar {
-  width: 40px; /* Kích thước của avatar */
-  height: 40px; /* Kích thước của avatar */
-  border-radius: 50%; /* Làm tròn avatar */
-  margin-right: 10px; /* Khoảng cách giữa avatar và nội dung tin nhắn */
+  width: 40px; 
+  height: 40px; 
+  border-radius: 50%; 
+  margin-right: 10px; 
 }
 
 .messageContent {
-  max-width: 70%; /* Độ rộng tối đa của nội dung tin nhắn */
-  padding: 10px; /* Đệm bên trong cho nội dung */
-  border-radius: 10px; /* Làm tròn các góc */
+  max-width: 70%; 
+  padding: 10px; 
+  border-radius: 10px; 
 }
 
 .received .messageContent {
-  background-color: #f1f1f1; /* Màu nền cho tin nhắn nhận */
+  background-color: #f1f1f1; 
 }
 
 .sent .messageContent {
-  background-color: #f1f1f1; /* Màu nền cho tin nhắn gửi */
+  background-color: #f1f1f1; 
+}
+
+.file-label {
+  cursor: pointer; 
+  margin-left: 10px; 
+  font-size: 1.5em; 
+}
+
+#deleteChatButton{
+  margin-left: 10px;
+}
+
+#deleteChatButton i{
+  color:#000;
 }
