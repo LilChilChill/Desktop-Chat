@@ -85,9 +85,15 @@ function openChat(friendId, friendName, friendAvatar) {
                 messageDiv.innerHTML = `
                     ${message.sender === friendId ? 
                         `<img src="${friendAvatar}" alt="${friendName}" class="avatar">` : 
-                        `<img src="${senderAvatarUrl}" alt="Bạn" class="avatar">`
+                        `<img src="${senderAvatarUrl}" alt="Bạn" style="display: none;" >`
                     }
-                    <div class="messageContent">${message.content}</div>
+                    <div class="msgContent">
+                        <div class="messageContent">
+                        <p>${message.content}</p>
+                        <p class="contentTime">${message.timestamp}</p>
+                        </div>
+                        ${message.file ? `<img src="http://localhost:5000/${message.file}" class="imgContent" />` : ''}
+                    </div>
                 `;
                 chatArea.appendChild(messageDiv);
             });
@@ -108,7 +114,9 @@ document.getElementById('fileInput').addEventListener('change', function(event) 
 
     
     if (selectedFile) {
-        document.getElementById('chatInput').value = `Đã chọn file: ${selectedFile.name}`;
+        // document.getElementById('chatInput').value = `Đã chọn file: ${selectedFile.name}`;
+        const chatInput = document.getElementById('inputPreview')
+        chatInput.innerHTML = `<img src="${selectedFile.name}" />`
     }
     // if (selectedFile) {
     //     document.getElementById('chatInput').value = `<img src="http://localhost:5000/${selectedFile.name}" />`;

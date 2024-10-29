@@ -152,7 +152,10 @@ body {
   border: 1px solid #ddd;
   border-radius: 5px;
   font-size: 16px;
+  word-wrap: break-word;
+  resize: none;
 }
+
 
 #sendButton {
   width: auto;
@@ -178,23 +181,6 @@ body {
   height: 40px;
   border-radius: 50%;
   margin-right: 10px;
-}
-
-
-.message .messageContent {
-  background-color: #f1f1f1;
-  padding: 10px 15px;
-  border-radius: 15px;
-  max-width: 70%;
-}
-
-.message.sent .messageContent {
-  background-color: #d1f0ff;
-  align-self: flex-end;
-}
-
-.message.received .messageContent {
-  background-color: #e0e0e0;
 }
 
 .chatUser{
@@ -257,20 +243,6 @@ body {
   margin-right: 10px; 
 }
 
-.messageContent {
-  max-width: 70%; 
-  padding: 10px; 
-  border-radius: 10px; 
-}
-
-.received .messageContent {
-  background-color: #f1f1f1; 
-}
-
-.sent .messageContent {
-  background-color: #f1f1f1; 
-}
-
 .file-label {
   cursor: pointer; 
   margin-left: 10px; 
@@ -283,4 +255,43 @@ body {
 
 #deleteChatButton i{
   color:#000;
+}
+
+.imgContent{
+  max-width: 200px;
+  max-height: 200px;
+  border-radius: 20px;
+}
+
+.contentTime{
+  font-size: 10px;
+  margin-top: 10px;
+}
+
+.msgContent{
+  max-width: 70%;
+}
+
+.msgContent .messageContent {
+  padding: 10px; 
+  border-radius: 10px; 
+}
+
+.message p{
+  color: #fff;
+}
+
+.received .messageContent {
+  background-color: #6b6b6b; 
+  align-items: flex-start;
+  align-self: flex-start;
+  justify-content: flex-start;
+}
+
+.sent .imgContent{
+  
+}
+
+.sent .messageContent {
+  background-color: #3872fa;
 }
