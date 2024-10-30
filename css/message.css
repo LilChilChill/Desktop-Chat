@@ -260,7 +260,7 @@ body {
 .imgContent{
   max-width: 200px;
   max-height: 200px;
-  border-radius: 20px;
+  border-radius: 10px;
 }
 
 .contentTime{
@@ -288,10 +288,34 @@ body {
   justify-content: flex-start;
 }
 
-.sent .imgContent{
-  
+.sent .msgContent{
+  display: flex;
+  align-items: flex-end;
+  flex-direction: column;
 }
 
 .sent .messageContent {
+  display: flex;
+  align-items: flex-end; 
   background-color: #3872fa;
+}
+
+.received .msgContent{
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+}
+
+.received .messageContent {
+  display: flex;
+  align-items: flex-start; 
+  background-color: #3872fa;
+}
+
+#inputPreview{
+  display: flex;
+}
+.imgPreview {
+
+  max-width: 35%;
 }

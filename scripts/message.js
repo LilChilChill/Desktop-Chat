@@ -80,19 +80,20 @@ function openChat(friendId, friendName, friendAvatar) {
                 const messageDiv = document.createElement('div');
                 messageDiv.classList.add('message', message.sender === friendId ? 'received' : 'sent');
                 
-                const senderAvatarUrl = `http://localhost:5000/uploads/Avatars/${message.sender}/avatar.png`;
+                const fileDataUrl = message.file && message.file.data
+                    ? `data:${message.file.contentType};base64,${message.file.data}`
+                    : null;
 
                 messageDiv.innerHTML = `
                     ${message.sender === friendId ? 
                         `<img src="${friendAvatar}" alt="${friendName}" class="avatar">` : 
-                        `<img src="${senderAvatarUrl}" alt="Bạn" style="display: none;" >`
+                        `<img src="${userAvatar}" alt="Bạn" style="display: none;" >`
                     }
                     <div class="msgContent">
                         <div class="messageContent">
-                        <p>${message.content}</p>
-                        <p class="contentTime">${message.timestamp}</p>
+                            <p>${message.content}</p>
                         </div>
-                        ${message.file ? `<img src="http://localhost:5000/${message.file}" class="imgContent" />` : ''}
+                        ${fileDataUrl ? `<img src="${fileDataUrl}" class="imgContent" />` : ''}
                     </div>
                 `;
                 chatArea.appendChild(messageDiv);
@@ -112,15 +113,11 @@ document.getElementById('fileInput').addEventListener('change', function(event) 
     const fileInput = event.target;
     selectedFile = fileInput.files[0]; 
 
-    
     if (selectedFile) {
-        // document.getElementById('chatInput').value = `Đã chọn file: ${selectedFile.name}`;
-        const chatInput = document.getElementById('inputPreview')
-        chatInput.innerHTML = `<img src="${selectedFile.name}" />`
+        const chatInput = document.getElementById('inputPreview');
+        chatInput.innerHTML = `<img src="${URL.createObjectURL(selectedFile)}" alt="Selected File" class="imgPreview"/>`;
+        // document.getElementById('chatInput').value = `<img src="${URL.createObjectURL(selectedFile)}" alt="Selected File" class="imgPreview"/>`;
     }
-    // if (selectedFile) {
-    //     document.getElementById('chatInput').value = `<img src="http://localhost:5000/${selectedFile.name}" />`;
-    // }
 });
 
 document.getElementById('sendButton').addEventListener('click', () => {
