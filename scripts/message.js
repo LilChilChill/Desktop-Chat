@@ -50,7 +50,7 @@ function openChat(friendId, friendName, friendAvatar) {
     document.getElementById('username').textContent = friendName;
     document.getElementById('avatar').src = friendAvatar;
     currentFriendId = friendId;
-
+    
     const chatArea = document.getElementById('chatArea');
     chatArea.innerHTML = '<p class="loading">Đang tải tin nhắn...</p>';
 
@@ -92,6 +92,7 @@ function openChat(friendId, friendName, friendAvatar) {
                     <div class="msgContent">
                         <div class="messageContent">
                             <p>${message.content}</p>
+                            <p>${message.timestamp}</p>
                         </div>
                         ${fileDataUrl ? `<img src="${fileDataUrl}" class="imgContent" />` : ''}
                     </div>
@@ -122,7 +123,9 @@ document.getElementById('fileInput').addEventListener('change', function(event) 
 
 document.getElementById('sendButton').addEventListener('click', () => {
     const messageInput = document.getElementById('chatInput');
+    const chatInput = document.getElementById('inputPreview');
     const content = messageInput.value;
+    const fileData = chatInput
 
     if (!content && !selectedFile || !currentFriendId) {
         return;

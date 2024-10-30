@@ -181,6 +181,7 @@ body {
   height: 40px;
   border-radius: 50%;
   margin-right: 10px;
+  cursor: pointer;
 }
 
 .chatUser{
@@ -206,6 +207,7 @@ body {
   height: 40px;
   border-radius: 50%;
   margin-right: 10px;
+  cursor: pointer;
 }
 
 #avatar {
@@ -213,6 +215,7 @@ body {
   height: 40px;
   border-radius: 50%;
   margin-right: 10px;
+  cursor: pointer;
 }
 
 .loading {
@@ -261,6 +264,7 @@ body {
   max-width: 200px;
   max-height: 200px;
   border-radius: 10px;
+  cursor: pointer;
 }
 
 .contentTime{
@@ -309,6 +313,7 @@ body {
 .received .messageContent {
   display: flex;
   align-items: flex-start; 
+  flex-direction: column;
   background-color: #3872fa;
 }
 
