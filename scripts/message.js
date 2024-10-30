@@ -1,6 +1,6 @@
 const socket = io('http://localhost:5000');
 let currentFriendId = null;
-let selectedFile = null; 
+let selectedFile = null;
 
 function getFriends() {
     const token = localStorage.getItem('token'); 
@@ -46,15 +46,15 @@ function getFriends() {
     });
 }
 
-function openChat(friendId, friendName, friendAvatar) {
+function openChat(friendId, friendName, friendAvatar, page = 1) {
     document.getElementById('username').textContent = friendName;
     document.getElementById('avatar').src = friendAvatar;
     currentFriendId = friendId;
-    
+
     const chatArea = document.getElementById('chatArea');
     chatArea.innerHTML = '<p class="loading">Đang tải tin nhắn...</p>';
 
-    fetch(`http://localhost:5000/api/messages/${friendId}`, {
+    fetch(`http://localhost:5000/api/messages/${friendId}?page=${page}`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -76,23 +76,23 @@ function openChat(friendId, friendName, friendAvatar) {
                 ? `http://localhost:5000/${localStorage.getItem('avatar').replace(/\\/g, '/')}` 
                 : 'default-avatar.png';
 
+            // Render tin nhắn
             messages.forEach(message => {
                 const messageDiv = document.createElement('div');
                 messageDiv.classList.add('message', message.sender === friendId ? 'received' : 'sent');
                 
-                const fileDataUrl = message.file && message.file.data
+                const fileDataUrl = message.file && message.file.data && typeof message.file.data === 'string'
                     ? `data:${message.file.contentType};base64,${message.file.data}`
                     : null;
 
                 messageDiv.innerHTML = `
                     ${message.sender === friendId ? 
                         `<img src="${friendAvatar}" alt="${friendName}" class="avatar">` : 
-                        `<img src="${userAvatar}" alt="Bạn" style="display: none;" >`
+                        `<img src="${userAvatar}" alt="Bạn" style="display: none;">`
                     }
                     <div class="msgContent">
                         <div class="messageContent">
-                            <p>${message.content}</p>
-                            <p>${message.timestamp}</p>
+                            <p>${message.content.replace(/\n/g, '<br>')}</p> <!-- Chuyển đổi dòng mới -->
                         </div>
                         ${fileDataUrl ? `<img src="${fileDataUrl}" class="imgContent" />` : ''}
                     </div>
@@ -101,14 +101,13 @@ function openChat(friendId, friendName, friendAvatar) {
             });
         }
 
-        chatArea.scrollTop = chatArea.scrollHeight;
+        chatArea.scrollTop = chatArea.scrollHeight; // Cuộn xuống cuối
     })
     .catch(error => {
         console.error('Lỗi khi lấy tin nhắn:', error);
         chatArea.innerHTML = '<p>Không thể tải tin nhắn. Vui lòng thử lại sau.</p>';
     });
 }
-
 
 document.getElementById('fileInput').addEventListener('change', function(event) {
     const fileInput = event.target;
@@ -117,15 +116,12 @@ document.getElementById('fileInput').addEventListener('change', function(event) 
     if (selectedFile) {
         const chatInput = document.getElementById('inputPreview');
         chatInput.innerHTML = `<img src="${URL.createObjectURL(selectedFile)}" alt="Selected File" class="imgPreview"/>`;
-        // document.getElementById('chatInput').value = `<img src="${URL.createObjectURL(selectedFile)}" alt="Selected File" class="imgPreview"/>`;
     }
 });
 
 document.getElementById('sendButton').addEventListener('click', () => {
     const messageInput = document.getElementById('chatInput');
-    const chatInput = document.getElementById('inputPreview');
-    const content = messageInput.value;
-    const fileData = chatInput
+    const content = messageInput.value.trim(); // Xóa khoảng trắng
 
     if (!content && !selectedFile || !currentFriendId) {
         return;
@@ -153,9 +149,29 @@ document.getElementById('sendButton').addEventListener('click', () => {
         return response.json();
     })
     .then(data => {
-        messageInput.value = '';
+        messageInput.value = ''; // Xóa nội dung ô nhập
         selectedFile = null; 
-        openChat(currentFriendId, document.getElementById('username').textContent, document.getElementById('avatar').src);
+        document.getElementById('inputPreview').innerHTML = ''; // Xóa preview file
+
+        // Hiển thị tin nhắn đã gửi
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('message', 'sent');
+
+        // Tạo URL cho tệp
+        const fileDataUrl = data.messageData.file && data.messageData.file.data && typeof data.messageData.file.data === 'string'
+            ? `data:${data.messageData.file.contentType};base64,${data.messageData.file.data}`
+            : null;
+
+        messageDiv.innerHTML = `
+            <div class="msgContent">
+                <div class="messageContent">
+                    <p>${data.messageData.content.replace(/\n/g, '<br>')}</p>
+                </div>
+                ${fileDataUrl ? `<img src="${fileDataUrl}" class="imgContent" />` : ''}
+            </div>
+        `; // Chuyển đổi dòng mới
+        document.getElementById('chatArea').appendChild(messageDiv);
+        chatArea.scrollTop = chatArea.scrollHeight; // Cuộn xuống cuối
     })
     .catch(error => {
         console.error('Lỗi khi gửi tin nhắn:', error);
@@ -164,7 +180,29 @@ document.getElementById('sendButton').addEventListener('click', () => {
 
 socket.on('receiveMessage', (messageData) => {
     if (messageData.receiverId === currentFriendId || messageData.sender === currentFriendId) {
-        openChat(currentFriendId, '', '');
+        const chatArea = document.getElementById('chatArea');
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('message', messageData.sender === currentFriendId ? 'received' : 'sent');
+        
+        // Tạo URL cho tệp
+        const fileDataUrl = messageData.file && messageData.file.data && typeof messageData.file.data === 'string'
+            ? `data:${messageData.file.contentType};base64,${messageData.file.data}`
+            : null;
+
+        messageDiv.innerHTML = `
+            ${messageData.sender === currentFriendId ? 
+                `<img src="${friendAvatar}" alt="${friendName}" class="avatar">` : 
+                `<img src="${userAvatar}" alt="Bạn" style="display: none;">`
+            }
+            <div class="msgContent">
+                <div class="messageContent">
+                    <p>${messageData.content.replace(/\n/g, '<br>')}</p> <!-- Chuyển đổi dòng mới -->
+                </div>
+                ${fileDataUrl ? `<img src="${fileDataUrl}" class="imgContent" />` : ''}
+            </div>
+        `;
+        chatArea.appendChild(messageDiv);
+        chatArea.scrollTop = chatArea.scrollHeight; // Cuộn xuống cuối
     }
 });
 
@@ -192,4 +230,5 @@ document.getElementById('deleteChatButton').addEventListener('click', () => {
     }
 });
 
-document.addEventListener('DOMContentLoaded', getFriends);
+// Khởi đầu khi tải trang
+getFriends();
