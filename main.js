@@ -1,5 +1,5 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
-import { signUp } from './firebase.js'; // Sử dụng import
+import { signUp } from './firebase.js';
 
 ipcMain.handle('sign-up', async (event, email, password, name) => {
     return await signUp(name, email, password);

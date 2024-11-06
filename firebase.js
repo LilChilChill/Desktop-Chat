@@ -30,5 +30,4 @@ async function signUp(name, email, password) {
     }
 }
 
-// Xuất ra các chức năng
 export { auth, db, signUp };

@@ -76,7 +76,6 @@ function openChat(friendId, friendName, friendAvatar, page = 1) {
                 ? `http://localhost:5000/${localStorage.getItem('avatar').replace(/\\/g, '/')}` 
                 : 'default-avatar.png';
 
-            // Render tin nhắn
             messages.forEach(message => {
                 const messageDiv = document.createElement('div');
                 messageDiv.classList.add('message', message.sender === friendId ? 'received' : 'sent');
@@ -84,7 +83,7 @@ function openChat(friendId, friendName, friendAvatar, page = 1) {
                 const fileDataUrl = message.file && message.file.data && typeof message.file.data === 'string'
                     ? `data:${message.file.contentType};base64,${message.file.data}`
                     : null;
-
+                    
                 messageDiv.innerHTML = `
                     ${message.sender === friendId ? 
                         `<img src="${friendAvatar}" alt="${friendName}" class="avatar">` : 
@@ -98,10 +97,11 @@ function openChat(friendId, friendName, friendAvatar, page = 1) {
                     </div>
                 `;
                 chatArea.appendChild(messageDiv);
+                
             });
         }
 
-        chatArea.scrollTop = chatArea.scrollHeight; // Cuộn xuống cuối
+        chatArea.scrollTop = chatArea.scrollHeight; 
     })
     .catch(error => {
         console.error('Lỗi khi lấy tin nhắn:', error);
@@ -121,7 +121,7 @@ document.getElementById('fileInput').addEventListener('change', function(event) 
 
 document.getElementById('sendButton').addEventListener('click', () => {
     const messageInput = document.getElementById('chatInput');
-    const content = messageInput.value.trim(); // Xóa khoảng trắng
+    const content = messageInput.value.trim(); 
 
     if (!content && !selectedFile || !currentFriendId) {
         return;
@@ -149,15 +149,22 @@ document.getElementById('sendButton').addEventListener('click', () => {
         return response.json();
     })
     .then(data => {
-        messageInput.value = ''; // Xóa nội dung ô nhập
+        messageInput.value = ''; 
         selectedFile = null; 
-        document.getElementById('inputPreview').innerHTML = ''; // Xóa preview file
+        document.getElementById('inputPreview').innerHTML = ''; 
 
-        // Hiển thị tin nhắn đã gửi
+        
+        socket.emit('sendMessage', {
+            content: data.messageData.content,
+            receiverId: currentFriendId,
+            sender: localStorage.getItem('userId'), 
+            file: data.messageData.file
+        });
+
+        
         const messageDiv = document.createElement('div');
         messageDiv.classList.add('message', 'sent');
 
-        // Tạo URL cho tệp
         const fileDataUrl = data.messageData.file && data.messageData.file.data && typeof data.messageData.file.data === 'string'
             ? `data:${data.messageData.file.contentType};base64,${data.messageData.file.data}`
             : null;
@@ -169,9 +176,9 @@ document.getElementById('sendButton').addEventListener('click', () => {
                 </div>
                 ${fileDataUrl ? `<img src="${fileDataUrl}" class="imgContent" />` : ''}
             </div>
-        `; // Chuyển đổi dòng mới
+        `; 
         document.getElementById('chatArea').appendChild(messageDiv);
-        chatArea.scrollTop = chatArea.scrollHeight; // Cuộn xuống cuối
+        chatArea.scrollTop = chatArea.scrollHeight; 
     })
     .catch(error => {
         console.error('Lỗi khi gửi tin nhắn:', error);
@@ -184,7 +191,6 @@ socket.on('receiveMessage', (messageData) => {
         const messageDiv = document.createElement('div');
         messageDiv.classList.add('message', messageData.sender === currentFriendId ? 'received' : 'sent');
         
-        // Tạo URL cho tệp
         const fileDataUrl = messageData.file && messageData.file.data && typeof messageData.file.data === 'string'
             ? `data:${messageData.file.contentType};base64,${messageData.file.data}`
             : null;
@@ -196,13 +202,13 @@ socket.on('receiveMessage', (messageData) => {
             }
             <div class="msgContent">
                 <div class="messageContent">
-                    <p>${messageData.content.replace(/\n/g, '<br>')}</p> <!-- Chuyển đổi dòng mới -->
+                    <p>${messageData.content.replace(/\n/g, '<br>')}</p>
                 </div>
                 ${fileDataUrl ? `<img src="${fileDataUrl}" class="imgContent" />` : ''}
             </div>
         `;
         chatArea.appendChild(messageDiv);
-        chatArea.scrollTop = chatArea.scrollHeight; // Cuộn xuống cuối
+        chatArea.scrollTop = chatArea.scrollHeight;
     }
 });
 
@@ -218,11 +224,7 @@ document.getElementById('deleteChatButton').addEventListener('click', () => {
             if (!response.ok) {
                 throw new Error('Lỗi khi xóa lịch sử chat');
             }
-            return response.json();
-        })
-        .then(data => {
-            const chatArea = document.getElementById('chatArea');
-            chatArea.innerHTML = '<p>Lịch sử chat đã được xóa.</p>';
+            document.getElementById('chatArea').innerHTML = '<p>Đã xóa lịch sử chat.</p>';
         })
         .catch(error => {
             console.error('Lỗi khi xóa lịch sử chat:', error);
@@ -230,5 +232,4 @@ document.getElementById('deleteChatButton').addEventListener('click', () => {
     }
 });
 
-// Khởi đầu khi tải trang
 getFriends();

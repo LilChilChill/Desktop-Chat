@@ -13,7 +13,6 @@ const firebaseConfig = {
     measurementId: "G-LN4236KHXP"
 };
 
-// Khởi tạo Firebase
 const app = firebase.initializeApp(firebaseConfig);
 
 contextBridge.exposeInMainWorld('firebase', {
