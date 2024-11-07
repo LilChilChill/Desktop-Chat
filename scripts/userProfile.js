@@ -38,7 +38,7 @@ const displayUserInfo = (user) => {
     const avatarUrl = user.avatar && user.avatar.data && typeof user.avatar.data === 'string'
         ? `data:${user.avatar.contentType};base64,${user.avatar.data}`
         : null;
-        
+    console.log('avatar:', avatarUrl)
 
     userInfoContainer.innerHTML = `
         <img id="userAvatar" src="${avatarUrl}" alt="Avatar" style="width: 100px; height: 100px; border-radius: 50%;">

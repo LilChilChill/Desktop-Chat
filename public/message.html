@@ -37,7 +37,7 @@
                     <a href="#"><i class="fa-solid fa-phone"></i></a>
                     <a href="#"><i class="fa-solid fa-video"></i></a>
                     <a href="#"><i class="fa fa-search"></i></a>
-                    <a href="#"><i class="fa fa-ellipsis-h"></i></a>
+                    <a href="#" onclick="sideMenu()"><i class="fa fa-ellipsis-h"></i></a>
                 </div>
             </div>
 
@@ -52,23 +52,35 @@
                     <label for="fileInput" class="file-label">
                         <i class="fa fa-paperclip"></i>
                     </label>
-                    <a href="#" id="deleteChatButton"><i class="fa fa-trash"></i></a>
                 </div>
                 <div class="chatInput">
                     <textarea id="chatInput" placeholder="Nhập tin nhắn..." ></textarea>
                     <button id="sendButton"><i class="fa-solid fa-paper-plane"></i></button>
-                    <div id="inputPreview"></div>
                 </div>
-                
-                <dialog>
-                    <button autofocus>Close</button>
-                    <p>This modal dialog has a groovy backdrop!</p>
-                </dialog>
+                <div id="inputPreview"></div>
             </div>
+        </div>
+
+        <div id="sideMenu" class="side" style="display: none;">
+            <div class="headerSide" id="headerSide">
+                <img src="../img/default-avatar.png" alt="Ảnh đại diện" id="headerAva"/>
+                <p>UserName</p>
+            </div>
+
+
+            <a href="#" id="deleteChatButton" >
+                <i class="fa-regular fa-trash-can"></i>
+                <p>Xóa lịch sử trò chuyện</p>
+            </a>
         </div>
     </div>
     
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
     <script src="../scripts/message.js"></script>
+    <script>
+        function sideMenu(){
+            document.getElementById('sideMenu').style.display = document.getElementById('sideMenu').style.display === 'none'? 'flex' : 'none';
+        }
+    </script>
 </body>
 </html>

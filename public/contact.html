@@ -66,10 +66,16 @@
                 } else {
                     users.forEach(user => {
                         const userItem = document.createElement('div');
+
+                        const avatarUrl = user.avatar && user.avatar.data && typeof user.avatar.data === 'string'
+                            ? `data:${user.avatar.contentType};base64,${user.avatar.data}`
+                            : null;
+                        console.log('avatar:', avatarUrl)
+                        console.log('data:', user.avatar.data)
                         userItem.classList.add('user-item');
                         userItem.innerHTML = `
                             <div class='userName'> 
-                                <img src="http://localhost:5000/${user.avatar || 'default-avatar.png'}" alt="${user.name}" id="avatar">
+                                <img src="${avatarUrl}" alt="${user.name}" id="avatar">
                                 <span>${user.name}</span>    
                             </div>
                             <button onclick="addFriend('${user._id}')">Thêm bạn</button>

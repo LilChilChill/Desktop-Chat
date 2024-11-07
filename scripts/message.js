@@ -1,6 +1,8 @@
 const socket = io('http://localhost:5000');
 let currentFriendId = null;
 let selectedFile = null;
+let friendAvatar = null;
+let friendName = null; 
 
 function getFriends() {
     const token = localStorage.getItem('token'); 
@@ -20,17 +22,22 @@ function getFriends() {
     .then(response => response.json())
     .then(friends => {
         const friendList = document.getElementById('friendList');
+        const headerName = document.getElementById('header')
         friendList.innerHTML = ''; 
 
         if (friends.length === 0) {
             friendList.innerHTML = '<p>Không có bạn bè nào.</p>';
         } else {
             friends.forEach(friend => {
+                const friendAvatar = friend.avatar && friend.avatar.data && typeof friend.avatar.data === 'string'
+                    ? `data:${friend.avatar.contentType};base64,${friend.avatar.data}`
+                    : null;
+
                 const friendItem = document.createElement('div');
                 friendItem.classList.add('friend-item');
                 friendItem.innerHTML = `
-                    <div class='chatUser' onclick="openChat('${friend._id}', '${friend.name}', 'http://localhost:5000/${friend.avatar || 'default-avatar.png'}')">
-                        <img src="http://localhost:5000/${friend.avatar || 'default-avatar.png'}" alt="${friend.name}" class="avatar">
+                    <div class='chatUser' onclick="openChat('${friend._id}', '${friend.name}', '${friendAvatar}')">
+                        <img src="${friendAvatar}" alt="${friend.name}" class="avatar">
                         <div class='content'>
                             <span>${friend.name}</span>
                         </div>
@@ -46,10 +53,13 @@ function getFriends() {
     });
 }
 
-function openChat(friendId, friendName, friendAvatar, page = 1) {
+function openChat(friendId, name, avatar, page = 1) {
+    friendName = name;
+    friendAvatar = avatar;
     document.getElementById('username').textContent = friendName;
     document.getElementById('avatar').src = friendAvatar;
     currentFriendId = friendId;
+
 
     const chatArea = document.getElementById('chatArea');
     chatArea.innerHTML = '<p class="loading">Đang tải tin nhắn...</p>';
@@ -72,10 +82,6 @@ function openChat(friendId, friendName, friendAvatar, page = 1) {
         if (messages.length === 0) {
             chatArea.innerHTML = '<p>Không có tin nhắn nào.</p>';
         } else {
-            const userAvatar = localStorage.getItem('avatar') 
-                ? `http://localhost:5000/${localStorage.getItem('avatar').replace(/\\/g, '/')}` 
-                : 'default-avatar.png';
-
             messages.forEach(message => {
                 const messageDiv = document.createElement('div');
                 messageDiv.classList.add('message', message.sender === friendId ? 'received' : 'sent');
@@ -87,7 +93,7 @@ function openChat(friendId, friendName, friendAvatar, page = 1) {
                 messageDiv.innerHTML = `
                     ${message.sender === friendId ? 
                         `<img src="${friendAvatar}" alt="${friendName}" class="avatar">` : 
-                        `<img src="${userAvatar}" alt="Bạn" style="display: none;">`
+                        `<img src="" alt="Bạn" style="display: none;">`
                     }
                     <div class="msgContent">
                         <div class="messageContent">
@@ -195,11 +201,10 @@ socket.on('receiveMessage', (messageData) => {
             ? `data:${messageData.file.contentType};base64,${messageData.file.data}`
             : null;
 
+        const avatarUrl = messageData.sender === currentFriendId ? friendAvatar : 'path_to_user_avatar';
+
         messageDiv.innerHTML = `
-            ${messageData.sender === currentFriendId ? 
-                `<img src="${friendAvatar}" alt="${friendName}" class="avatar">` : 
-                `<img src="${userAvatar}" alt="Bạn" style="display: none;">`
-            }
+            <img src="${avatarUrl}" alt="${messageData.sender === currentFriendId ? friendName : 'Bạn'}" class="avatar">
             <div class="msgContent">
                 <div class="messageContent">
                     <p>${messageData.content.replace(/\n/g, '<br>')}</p>
@@ -211,6 +216,7 @@ socket.on('receiveMessage', (messageData) => {
         chatArea.scrollTop = chatArea.scrollHeight;
     }
 });
+
 
 document.getElementById('deleteChatButton').addEventListener('click', () => {
     if (confirm('Bạn có chắc chắn muốn xóa toàn bộ lịch sử chat không?')) {

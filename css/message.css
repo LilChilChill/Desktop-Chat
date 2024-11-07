@@ -30,6 +30,21 @@ body {
   flex-direction: column;
 }
 
+.side{
+  width: 30%;
+  background-color: #9d9d9d;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px
+}
+
+#headerAva{
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
 .form__group {
   margin-bottom: 20px;
   margin-left: 15px;
@@ -257,11 +272,17 @@ body {
 }
 
 #deleteChatButton{
-  margin-left: 10px;
+  display: flex;
+  flex-direction: row;
+  color: red;
+  text-decoration: none;
+  justify-content: space-between;
+  padding: 10px;
 }
 
-#deleteChatButton i{
-  color:#000;
+#deleteChatButton:hover {
+  background-color: #626262;
+  border-radius: 10px;
 }
 
 .imgContent{
@@ -283,10 +304,6 @@ body {
 .msgContent .messageContent {
   padding: 12px; 
   border-radius: 20px; 
-}
-
-.message p{
-  /* color: #fff; */
 }
 
 .received .messageContent {
