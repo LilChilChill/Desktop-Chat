@@ -47,7 +47,11 @@
 
             <div class="rightFooter">
                 <div class="chatFunction">
-                    <i class="fa fa-smile"></i>
+                    <i class="fa fa-smile" onclick="emojiToggle()">
+                        <div id="emoji" style="display: none;" >
+                            <emoji-picker></emoji-picker>
+                        </div>
+                    </i>
                     <input type="file" id="fileInput" accept="*/*" style="display: none;" />
                     <label for="fileInput" class="file-label">
                         <i class="fa fa-paperclip"></i>
@@ -63,23 +67,32 @@
 
         <div id="sideMenu" class="side" style="display: none;">
             <div class="headerSide" id="headerSide">
-                <img src="../img/default-avatar.png" alt="Ảnh đại diện" id="headerAva"/>
-                <p>UserName</p>
+                <!-- <img src="../img/default-avatar.png" alt="Ảnh đại diện" id="headerAva"/>
+                <p>UserName</p> -->
             </div>
 
+            <div class="file" id="file" >
+            </div>
 
             <a href="#" id="deleteChatButton" >
                 <i class="fa-regular fa-trash-can"></i>
                 <p>Xóa lịch sử trò chuyện</p>
             </a>
+            
+            
         </div>
     </div>
     
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
     <script src="../scripts/message.js"></script>
     <script>
         function sideMenu(){
             document.getElementById('sideMenu').style.display = document.getElementById('sideMenu').style.display === 'none'? 'flex' : 'none';
+        }
+
+        function emojiToggle(){
+            document.getElementById('emoji').style.display = document.getElementById('emoji').style.display === 'none'? 'flex' : 'none';
         }
     </script>
 </body>

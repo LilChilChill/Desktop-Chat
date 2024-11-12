@@ -28,21 +28,55 @@ body {
   width: 75%;
   display: flex;
   flex-direction: column;
+  margin: 0 10px;
 }
 
 .side{
   width: 30%;
-  background-color: #9d9d9d;
+  background-color: #f5f5f5;
   flex-direction: column;
   align-items: center;
   padding: 10px
+}
+
+.headerSide{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
 }
 
 #headerAva{
   width: 40px;
   height: 40px;
   border-radius: 50%;
+  margin-bottom: 10px;
   cursor: pointer;
+}
+
+#emoji{
+  
+}
+
+.file{
+  display: flex;
+  flex-direction: column;
+}
+
+.file a{
+  text-decoration: none;
+  padding: 5px;
+  color: #000;
+}
+
+.file a:hover{
+  background-color: #d4d4d4;
+  border-radius: 10px;
+}
+
+#fileDisplay{
+  flex-direction: column;
 }
 
 .form__group {
@@ -281,7 +315,7 @@ body {
 }
 
 #deleteChatButton:hover {
-  background-color: #626262;
+  background-color: #d4d4d4;
   border-radius: 10px;
 }
 
@@ -327,6 +361,10 @@ body {
   color: white;
 }
 
+.send .msgContent a:hover{
+  display: flex;
+}
+
 .received .msgContent{
   display: flex;
   align-items: flex-start;
@@ -353,4 +391,15 @@ body {
   align-items: center; 
 }
 
+.chat{
+  display: none;
+}
 
+.chat a{
+  padding-left: 10px;
+  color: #000;
+}
+
+.message:hover .chat{
+  display: flex;
+}

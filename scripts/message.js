@@ -60,9 +60,14 @@ function openChat(friendId, name, avatar, page = 1) {
     document.getElementById('avatar').src = friendAvatar;
     currentFriendId = friendId;
 
+    const friendInfo = document.getElementById('headerSide')
+    friendInfo.innerHTML = '<p style="color: #000;">Loading ...</p>'
 
     const chatArea = document.getElementById('chatArea');
     chatArea.innerHTML = '<p class="loading">Đang tải tin nhắn...</p>';
+
+    const fileData = document.getElementById('file')
+    fileData.innerHTML = '<p>Loading ...</p>'
 
     fetch(`http://localhost:5000/api/messages/${friendId}?page=${page}`, {
         method: 'GET',
@@ -78,9 +83,13 @@ function openChat(friendId, name, avatar, page = 1) {
     })
     .then(messages => {
         chatArea.innerHTML = '';
+        friendInfo.innerHTML = '';
+        fileData.innerHTML = '';
 
         if (messages.length === 0) {
             chatArea.innerHTML = '<p>Không có tin nhắn nào.</p>';
+            friendInfo.innerHTML = ''
+            fileData.innerHTML = '';
         } else {
             messages.forEach(message => {
                 const messageDiv = document.createElement('div');
@@ -96,12 +105,37 @@ function openChat(friendId, name, avatar, page = 1) {
                         `<img src="" alt="Bạn" style="display: none;">`
                     }
                     <div class="msgContent">
-                        <div class="messageContent">
-                            <p>${message.content.replace(/\n/g, '<br>')}</p> <!-- Chuyển đổi dòng mới -->
+                        <div style="display: flex; flex-direction: row; align-items: center;">
+                            <div class="messageContent">
+                                <p>${message.content.replace(/\n/g, '<br>')}</p> <!-- Chuyển đổi dòng mới -->
+                            </div>
+                            <div class="chat">
+                            <a href="#"><i class="fa-regular fa-face-smile"></i></a>
+                            <a href="#"><i class="fa-solid fa-share"></i></a>
+                            <a href="#"><i class="fa-solid fa-ellipsis-vertical"></i></a>
+                            </div>
                         </div>
                         ${fileDataUrl ? `<img src="${fileDataUrl}" class="imgContent" />` : ''}
                     </div>
                 `;
+
+                friendInfo.innerHTML = `
+                    <img src="${friendAvatar}" alt="Ảnh đại diện" id="headerAva"/>
+                    <p>${friendName}</p>
+                    <div>
+                        <a href="#"><i class="fa-solid fa-bell"></i></a>
+                        <a href="#"><i class="fa-solid fa-magnifying-glass"></i></a>
+                    </div>
+                `
+
+                fileData.innerHTML = `
+                    <a href="#" onclick="fileToggle()"><p>File phương tiện & file</p></a>
+                    <div style="display: none" id="fileDisplay">
+                        <a href="#"><p>File phương tiện</p></a>
+                        <a href="#"><p>File</p></a>
+                    </div>
+                `
+
                 chatArea.appendChild(messageDiv);
                 
             });
@@ -115,6 +149,11 @@ function openChat(friendId, name, avatar, page = 1) {
     });
 }
 
+
+
+function fileToggle(){
+    document.getElementById('fileDisplay').style.display = document.getElementById('fileDisplay').style.display === 'none'? 'flex' : 'none';
+}
 document.getElementById('fileInput').addEventListener('change', function(event) {
     const fileInput = event.target;
     selectedFile = fileInput.files[0]; 
