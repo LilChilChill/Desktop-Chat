@@ -21,6 +21,7 @@
 
             <div class="leftContent" id="friendList">
                 <div class="loading">Đang tải danh sách bạn bè...</div>
+                
             </div>
         </div>
 
@@ -34,8 +35,8 @@
                     </div>
                 </div>
                 <div class="headerIcon">
-                    <a href="#"><i class="fa-solid fa-phone"></i></a>
-                    <a href="#"><i class="fa-solid fa-video"></i></a>
+                    <a href="#" onclick="voiceCall()"><i class="fa-solid fa-phone"></i></a>
+                    <a href="#" onclick="videoCall()"><i class="fa-solid fa-video"></i></a>
                     <a href="#" onclick="sideMenu()"><i class="fa fa-ellipsis-h"></i></a>
                 </div>
             </div>
@@ -46,11 +47,6 @@
 
             <div class="rightFooter">
                 <div class="chatFunction" id="chatFunction">
-                    <i class="fa fa-smile" onclick="emojiToggle()">
-                        <div id="emoji" style="display: none;" >
-                            <emoji-picker></emoji-picker>
-                        </div>
-                    </i>
                     <input type="file" id="fileInput" accept="*/*" style="display: none;" />
                     <label for="fileInput" class="file-label">
                         <i class="fa fa-paperclip"></i>
@@ -60,9 +56,16 @@
                     <div id="inputPreview"></div>
                     <div style="display: flex; flex-direction: row; width: 100%;">
                         <textarea id="chatInput" placeholder="Nhập tin nhắn..." ></textarea>
-                        <button id="sendButton"><i class="fa-solid fa-paper-plane"></i></button>
+                        <div class="icon" id="icon">
+                            <i class="fa fa-smile" onclick="emojiToggle()">
+                                <div id="emoji" style="display: none;" >
+                                    <emoji-picker></emoji-picker>
+                                </div>
+                            </i>
+                        </div>
                     </div>
                 </div>
+                <button id="sendButton"><i class="fa-solid fa-paper-plane"></i></button>
             </div>
         </div>
 
@@ -88,12 +91,12 @@
     <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
     <script src="../scripts/message.js"></script>
     <script>
-        function sideMenu(){
-            document.getElementById('sideMenu').style.display = document.getElementById('sideMenu').style.display === 'none'? 'flex' : 'none';
+        function voiceCall() {
+            alert('voice call')
         }
 
-        function emojiToggle(){
-            document.getElementById('emoji').style.display = document.getElementById('emoji').style.display === 'none'? 'flex' : 'none';
+        function videoCall() {
+            alert('video call')
         }
     </script>
 </body>

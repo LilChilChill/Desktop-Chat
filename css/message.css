@@ -164,42 +164,62 @@ body {
 .rightContent {
   flex: 1;
   padding: 20px;
-  overflow-y: auto;
+  overflow-y:auto;
   background-color: #fafafa;
 }
+::-webkit-scrollbar {
+  width: 10px;
+}
 
+::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+}
+ 
+::-webkit-scrollbar-thumb {
+  background: #888; 
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+}
 .rightFooter {
   padding: 20px;
   background-color: #fff;
   border-top: 1px solid #ddd;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-end;
 }
 
 .chatFunction {
   display: flex;
   align-items: center;
+  margin-right: 5px;
 }
 
+
+
 .chatFunction i {
-  margin-right: 10px;
   font-size: 20px;
+  width: auto;
+  padding: 10px;
   cursor: pointer;
 }
 
-#chatInput{
-  border-width: 0;
+.chatFunction i:hover{
+  background-color: #ddd;
+  border-radius: 50%;
+  cursor: pointer;
 }
 
 .chatInput {
+  height: auto;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   flex-grow: 1;
-  margin-left: 10px;
-  border-width: 1px;
-  border-color: #000;
+  border-radius: 20px;
+  background-color: #ccc;
 }
 
 .chatInput textarea {
@@ -213,19 +233,28 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow-y: hidden;
+  border-width: 0;
+  margin-right: 25px;
+  background-color: #ccc;
 }
 
+.chatInput textarea:focus{
+  outline: none;
+}
 
 #sendButton {
   width: auto;
   padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
+  background-color: #fff;
+  border: none;
   font-size: 16px;
+  margin-left: 5px;
 }
 
 #sendButton:hover{
-  background-color: #b8b8b8;
+  background-color: #ddd;
+  border-radius: 50%;
   cursor: pointer;
 }
 
@@ -250,11 +279,15 @@ body {
   margin-bottom: 10px;
   padding: 5px;
   cursor: pointer;
+  margin-left: 15px;
 }
 
 .chatUser:hover{
   background-color: #c0c0c0;
+  border-radius: 10px;
 }
+
+
 
 .content{
   display: flex;
@@ -384,27 +417,47 @@ body {
 } */
 
 .imgPreview {
-  max-width: 100%;
-  max-height: 200px; 
+  max-width: 30%;
   border-radius: 8px; 
   margin-top: 10px; 
+  margin-left: 10px; 
+
 }
 
 #inputPreview {
   display: block;
 }
 
-.chat{
+.chatLeft, .chatRight{
   display: none;
 }
 
-.chat a{
+.chatLeft a{
+  padding-right: 10px;
+  color: #000;
+}
+
+.chatRight a{
   padding-left: 10px;
   color: #000;
 }
 
-.message:hover .chat{
+.message.received:hover .chatRight{
   display: flex;
+  justify-content: flex-start;
+}
+
+.message.sent:hover .chatLeft{
+  display: flex;
+  justify-content: flex-start;
+}
+
+.icon{
+  position: absolute;
+  top: 91.5%;
+  left: 86%;
+  cursor: pointer;
+  padding: 10px;
 }
 
 .three-body {

@@ -66,13 +66,14 @@
                 } else {
                     users.forEach(user => {
                         const userItem = document.createElement('div');
-
-                        const avatarUrl = user.avatar && user.avatar.data && typeof user.avatar.data === 'string'
-                            ? `data:${user.avatar.contentType};base64,${user.avatar.data}`
-                            : null;
-                        console.log('avatar:', avatarUrl)
-                        console.log('data:', user.avatar.data)
                         userItem.classList.add('user-item');
+                        
+                        const avatarUrl = user.avatar && user.avatar.data && typeof user.avatar.data === 'string'
+                        ? `data:${user.avatar.contentType};base64,${user.avatar.data}`
+                        : null;
+                        
+                        console.log('data:', user.avatar)
+                        console.log('avatar:', avatarUrl)
                         userItem.innerHTML = `
                             <div class='userName'> 
                                 <img src="${avatarUrl}" alt="${user.name}" id="avatar">

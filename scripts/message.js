@@ -82,14 +82,7 @@ function openChat(friendId, name, avatar, page = 1) {
     `
 
     const fileData = document.getElementById('file')
-    fileData.innerHTML =
-    `
-        <div class="three-body">
-            <div class="three-body__dot"></div>
-            <div class="three-body__dot"></div>
-            <div class="three-body__dot"></div>
-        </div>
-    `
+    fileData.innerHTML =''
 
     fetch(`http://localhost:5000/api/messages/${friendId}?page=${page}`, {
         method: 'GET',
@@ -126,6 +119,12 @@ function openChat(friendId, name, avatar, page = 1) {
                         `<img src="${friendAvatar}" alt="${friendName}" class="avatar">` : 
                         `<img src="" alt="Bạn" style="display: none;">`
                     }
+                    <div class="chatLeft">
+                        <a href="#"><i class="fa-solid fa-ellipsis-vertical"></i></a>
+                        <a href="#"><i class="fa-solid fa-share"></i></a>
+                        <a href="#"><i class="fa-regular fa-face-smile"></i></a>
+                    </div>
+                    
                     <div class="msgContent">
                         <div style="display: flex; flex-direction: row; align-items: center;">
                             <div class="messageContent">
@@ -135,7 +134,7 @@ function openChat(friendId, name, avatar, page = 1) {
                         ${fileDataUrl ? `<img src="${fileDataUrl}" class="imgContent" />` : ''}
                     </div>
                     
-                    <div class="chat">
+                    <div class="chatRight">
                         <a href="#"><i class="fa-regular fa-face-smile"></i></a>
                         <a href="#"><i class="fa-solid fa-share"></i></a>
                         <a href="#"><i class="fa-solid fa-ellipsis-vertical"></i></a>
@@ -172,11 +171,6 @@ function openChat(friendId, name, avatar, page = 1) {
     });
 }
 
-
-
-function fileToggle(){
-    document.getElementById('fileDisplay').style.display = document.getElementById('fileDisplay').style.display === 'none'? 'flex' : 'none';
-}
 document.getElementById('fileInput').addEventListener('change', function(event) {
     const fileInput = event.target;
     selectedFile = fileInput.files[0]; 
@@ -317,5 +311,17 @@ document.getElementById('chatInput').addEventListener('keydown', (event) => {
     }
 });
 
+function fileToggle(){
+    document.getElementById('fileDisplay').style.display = document.getElementById('fileDisplay').style.display === 'none'? 'flex' : 'none';
+}
+
+function sideMenu(){
+    document.getElementById('sideMenu').style.display = document.getElementById('sideMenu').style.display === 'none'? 'flex' : 'none';
+    document.getElementById('icon').style.left = document.getElementById('icon').style.left === '65%' ? '86%' : '65%';
+}
+
+function emojiToggle(){
+    document.getElementById('emoji').style.display = document.getElementById('emoji').style.display === 'none'? 'flex' : 'none';
+}
 
 getFriends();

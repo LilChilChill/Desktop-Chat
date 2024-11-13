@@ -48,9 +48,13 @@
                     friendList.innerHTML = ''; 
                     friends.forEach(friend => {
                         const friendItem = document.createElement('div');
+                        const friendAvatar = friend.avatar && friend.avatar.data && typeof friend.avatar.data === 'string'
+                            ? `data:${friend.avatar.contentType};base64,${friend.avatar.data}`
+                            : null;
+
                         friendItem.classList.add('friend-item');
                         friendItem.innerHTML = `
-                            <img src="http://localhost:5000/${friend.avatar || 'default-avatar.png'}" alt="${friend.name}">
+                            <img src="${friendAvatar}" alt="${friend.name}">
                             <span>${friend.name}</span>
                             <button class="remove-friend" data-id="${friend._id}">Xóa</button>
                         `;
