@@ -156,13 +156,20 @@ function fileToggle(){
 }
 document.getElementById('fileInput').addEventListener('change', function(event) {
     const fileInput = event.target;
-    selectedFile = fileInput.files[0]; 
+    selectedFile = fileInput.files[0]; // lấy file đã chọn
 
     if (selectedFile) {
         const chatInput = document.getElementById('inputPreview');
-        chatInput.innerHTML = `<img src="${URL.createObjectURL(selectedFile)}" alt="Selected File" class="imgPreview"/>`;
+        // Kiểm tra nếu file là ảnh, thì tạo URL để hiển thị ảnh xem trước
+        if (selectedFile.type.startsWith('image/')) {
+            chatInput.innerHTML = `<img src="${URL.createObjectURL(selectedFile)}" alt="Selected File" class="imgPreview"/>`;
+        } else {
+            // Nếu là file khác không phải ảnh, chỉ hiển thị tên file
+            chatInput.innerHTML = `<p>${selectedFile.name}</p>`;
+        }
     }
 });
+
 
 document.getElementById('sendButton').addEventListener('click', () => {
     const messageInput = document.getElementById('chatInput');
@@ -276,5 +283,14 @@ document.getElementById('deleteChatButton').addEventListener('click', () => {
         });
     }
 });
+
+document.getElementById('chatInput').addEventListener('keydown', (event) => {
+    // Kiểm tra xem người dùng có nhấn phím Enter và không nhấn phím Shift (nếu muốn cho phép xuống dòng với Shift+Enter)
+    if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault(); // Ngừng hành động mặc định (thêm dòng mới)
+        document.getElementById('sendButton').click(); // Giả lập việc nhấn nút gửi
+    }
+});
+
 
 getFriends();
