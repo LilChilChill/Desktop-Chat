@@ -61,13 +61,35 @@ function openChat(friendId, name, avatar, page = 1) {
     currentFriendId = friendId;
 
     const friendInfo = document.getElementById('headerSide')
-    friendInfo.innerHTML = '<p style="color: #000;">Loading ...</p>'
-
+    friendInfo.innerHTML =
+    `
+        <div class="three-body">
+            <div class="three-body__dot"></div>
+            <div class="three-body__dot"></div>
+            <div class="three-body__dot"></div>
+        </div>
+    `
     const chatArea = document.getElementById('chatArea');
-    chatArea.innerHTML = '<p class="loading">Đang tải tin nhắn...</p>';
+    chatArea.innerHTML = 
+    `
+        <div style="display: flex; justify-content: center;">
+            <div class="three-body">
+                <div class="three-body__dot"></div>
+                <div class="three-body__dot"></div>
+                <div class="three-body__dot"></div>
+            </div>
+        </div>
+    `
 
     const fileData = document.getElementById('file')
-    fileData.innerHTML = '<p>Loading ...</p>'
+    fileData.innerHTML =
+    `
+        <div class="three-body">
+            <div class="three-body__dot"></div>
+            <div class="three-body__dot"></div>
+            <div class="three-body__dot"></div>
+        </div>
+    `
 
     fetch(`http://localhost:5000/api/messages/${friendId}?page=${page}`, {
         method: 'GET',
@@ -109,13 +131,14 @@ function openChat(friendId, name, avatar, page = 1) {
                             <div class="messageContent">
                                 <p>${message.content.replace(/\n/g, '<br>')}</p> <!-- Chuyển đổi dòng mới -->
                             </div>
-                            <div class="chat">
-                            <a href="#"><i class="fa-regular fa-face-smile"></i></a>
-                            <a href="#"><i class="fa-solid fa-share"></i></a>
-                            <a href="#"><i class="fa-solid fa-ellipsis-vertical"></i></a>
-                            </div>
                         </div>
                         ${fileDataUrl ? `<img src="${fileDataUrl}" class="imgContent" />` : ''}
+                    </div>
+                    
+                    <div class="chat">
+                        <a href="#"><i class="fa-regular fa-face-smile"></i></a>
+                        <a href="#"><i class="fa-solid fa-share"></i></a>
+                        <a href="#"><i class="fa-solid fa-ellipsis-vertical"></i></a>
                     </div>
                 `;
 
@@ -137,11 +160,11 @@ function openChat(friendId, name, avatar, page = 1) {
                 `
 
                 chatArea.appendChild(messageDiv);
-                
             });
         }
 
         chatArea.scrollTop = chatArea.scrollHeight; 
+        
     })
     .catch(error => {
         console.error('Lỗi khi lấy tin nhắn:', error);
@@ -156,15 +179,14 @@ function fileToggle(){
 }
 document.getElementById('fileInput').addEventListener('change', function(event) {
     const fileInput = event.target;
-    selectedFile = fileInput.files[0]; // lấy file đã chọn
+    selectedFile = fileInput.files[0]; 
 
     if (selectedFile) {
         const chatInput = document.getElementById('inputPreview');
-        // Kiểm tra nếu file là ảnh, thì tạo URL để hiển thị ảnh xem trước
+        
         if (selectedFile.type.startsWith('image/')) {
             chatInput.innerHTML = `<img src="${URL.createObjectURL(selectedFile)}" alt="Selected File" class="imgPreview"/>`;
         } else {
-            // Nếu là file khác không phải ảnh, chỉ hiển thị tên file
             chatInput.innerHTML = `<p>${selectedFile.name}</p>`;
         }
     }
@@ -174,9 +196,11 @@ document.getElementById('fileInput').addEventListener('change', function(event) 
 document.getElementById('sendButton').addEventListener('click', () => {
     const messageInput = document.getElementById('chatInput');
     const content = messageInput.value.trim(); 
+    const chatFunction = document.getElementById('chatFunction');
 
     if (!content && !selectedFile || !currentFriendId) {
         return;
+        
     }
 
     const messageData = new FormData();
@@ -226,11 +250,12 @@ document.getElementById('sendButton').addEventListener('click', () => {
                 <div class="messageContent">
                     <p>${data.messageData.content.replace(/\n/g, '<br>')}</p>
                 </div>
-                ${fileDataUrl ? `<img src="${fileDataUrl}" class="imgContent" />` : ''}
+                ${fileDataUrl ? `<img src="${fileDataUrl}" class="imgContent" />` : ``}
             </div>
         `; 
         document.getElementById('chatArea').appendChild(messageDiv);
         chatArea.scrollTop = chatArea.scrollHeight; 
+        
     })
     .catch(error => {
         console.error('Lỗi khi gửi tin nhắn:', error);
@@ -285,10 +310,10 @@ document.getElementById('deleteChatButton').addEventListener('click', () => {
 });
 
 document.getElementById('chatInput').addEventListener('keydown', (event) => {
-    // Kiểm tra xem người dùng có nhấn phím Enter và không nhấn phím Shift (nếu muốn cho phép xuống dòng với Shift+Enter)
+    
     if (event.key === 'Enter' && !event.shiftKey) {
-        event.preventDefault(); // Ngừng hành động mặc định (thêm dòng mới)
-        document.getElementById('sendButton').click(); // Giả lập việc nhấn nút gửi
+        event.preventDefault(); 
+        document.getElementById('sendButton').click(); 
     }
 });
 

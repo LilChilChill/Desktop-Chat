@@ -36,7 +36,6 @@
                 <div class="headerIcon">
                     <a href="#"><i class="fa-solid fa-phone"></i></a>
                     <a href="#"><i class="fa-solid fa-video"></i></a>
-                    <a href="#"><i class="fa fa-search"></i></a>
                     <a href="#" onclick="sideMenu()"><i class="fa fa-ellipsis-h"></i></a>
                 </div>
             </div>
@@ -46,7 +45,7 @@
             </div>
 
             <div class="rightFooter">
-                <div class="chatFunction">
+                <div class="chatFunction" id="chatFunction">
                     <i class="fa fa-smile" onclick="emojiToggle()">
                         <div id="emoji" style="display: none;" >
                             <emoji-picker></emoji-picker>
@@ -58,10 +57,12 @@
                     </label>
                 </div>
                 <div class="chatInput">
-                    <textarea id="chatInput" placeholder="Nhập tin nhắn..." ></textarea>
-                    <button id="sendButton"><i class="fa-solid fa-paper-plane"></i></button>
+                    <div id="inputPreview"></div>
+                    <div style="display: flex; flex-direction: row; width: 100%;">
+                        <textarea id="chatInput" placeholder="Nhập tin nhắn..." ></textarea>
+                        <button id="sendButton"><i class="fa-solid fa-paper-plane"></i></button>
+                    </div>
                 </div>
-                <div id="inputPreview"></div>
             </div>
         </div>
 
