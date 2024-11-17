@@ -59,7 +59,6 @@ const signUpButton = document.getElementById('signUp');
           alert('Đăng nhập thành công!');
           localStorage.setItem('token', data.token);
           window.location.href = 'main.html';
-          console.log("token: " + data.token);
         } else {
           alert(data);
         }

@@ -65,7 +65,7 @@
     </div>
     
     <div class="content">
-        <iframe id="mainContent" src="home.html"></iframe>
+        <iframe id="mainContent" src="person.html"></iframe>
     </div>
 
     <script>
@@ -78,6 +78,7 @@
         }
 
         function logout() {
+        localStorage.removeItem('userId')
         localStorage.removeItem('token');
         window.location.href = 'index.html'; 
     }

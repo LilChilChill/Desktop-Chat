@@ -72,8 +72,8 @@
                         ? `data:${user.avatar.contentType};base64,${user.avatar.data}`
                         : null;
                         
-                        console.log('data:', user.avatar)
-                        console.log('avatar:', avatarUrl)
+                        console.log('avatar:', user.name)
+                        console.log('data:', user.avatar.contentType)
                         userItem.innerHTML = `
                             <div class='userName'> 
                                 <img src="${avatarUrl}" alt="${user.name}" id="avatar">

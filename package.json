@@ -17,6 +17,7 @@
   "dependencies": {
     "electron-packager": "^17.1.2",
     "firebase": "^10.14.1",
-    "socket.io": "^4.8.1"
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1"
   }
 }

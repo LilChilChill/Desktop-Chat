@@ -35,6 +35,8 @@ const getUserInfo = async () => {
 };
 
 const displayUserInfo = (user) => {
+
+    localStorage.setItem('userId', user._id);
     const avatarUrl = user.avatar && user.avatar.data && typeof user.avatar.data === 'string'
         ? `data:${user.avatar.contentType};base64,${user.avatar.data}`
         : null;

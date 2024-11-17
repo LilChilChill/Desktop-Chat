@@ -3,6 +3,28 @@ let currentFriendId = null;
 let selectedFile = null;
 let friendAvatar = null;
 let friendName = null; 
+let currentPage = 1;
+
+socket.on('connect', () => {
+    const userId = localStorage.getItem('userId');
+
+    console.log('Đã kết nối với server:', socket.id);
+    if (userId) {
+        socket.emit('register', userId);
+        console.log(`Đã gửi sự kiện đăng ký userId: ${userId}`);
+    } else {
+        console.error('Không tìm thấy userId trong localStorage.');
+    }
+});
+
+// Log khi nhận sự kiện từ server
+socket.on('receiveMessage', (message) => {
+    console.log('Nhận tin nhắn:', message);
+});
+
+socket.on('disconnect', () => {
+    console.log('Mất kết nối tới server.');
+});
 
 function getFriends() {
     const token = localStorage.getItem('token'); 
@@ -59,6 +81,7 @@ function openChat(friendId, name, avatar, page = 1) {
     document.getElementById('username').textContent = friendName;
     document.getElementById('avatar').src = friendAvatar;
     currentFriendId = friendId;
+    currentPage = 1;
 
     const friendInfo = document.getElementById('headerSide')
     friendInfo.innerHTML =
@@ -192,17 +215,18 @@ document.getElementById('sendButton').addEventListener('click', () => {
     const content = messageInput.value.trim(); 
     const chatFunction = document.getElementById('chatFunction');
 
+    // Kiểm tra nếu không có nội dung tin nhắn, không có file và không có receiverId thì không gửi
     if (!content && !selectedFile || !currentFriendId) {
         return;
-        
     }
 
+    // Tạo messageData để gửi đến server
     const messageData = new FormData();
     messageData.append('content', content);
-    messageData.append('receiverId', currentFriendId);
+    messageData.append('receiverId', currentFriendId); // Chỉ gửi tới 1 người (người nhận 1:1)
 
     if (selectedFile) {
-        messageData.append('file', selectedFile);
+        messageData.append('file', selectedFile); // Thêm file nếu có
     }
 
     fetch('http://localhost:5000/api/messages', {
@@ -223,15 +247,16 @@ document.getElementById('sendButton').addEventListener('click', () => {
         selectedFile = null; 
         document.getElementById('inputPreview').innerHTML = ''; 
 
-        
+        // Gửi tin nhắn qua WebSocket
         socket.emit('sendMessage', {
+            chatType: 'private',
             content: data.messageData.content,
-            receiverId: currentFriendId,
+            receiverId: currentFriendId, // Chỉ gửi tới receiverId 1:1
             sender: localStorage.getItem('userId'), 
             file: data.messageData.file
         });
 
-        
+        // Tạo và hiển thị tin nhắn đã gửi
         const messageDiv = document.createElement('div');
         messageDiv.classList.add('message', 'sent');
 
@@ -244,7 +269,7 @@ document.getElementById('sendButton').addEventListener('click', () => {
                 <div class="messageContent">
                     <p>${data.messageData.content.replace(/\n/g, '<br>')}</p>
                 </div>
-                ${fileDataUrl ? `<img src="${fileDataUrl}" class="imgContent" />` : ``}
+                ${fileDataUrl ? `<img src="${fileDataUrl}" class="imgContent" />` : ''}
             </div>
         `; 
         document.getElementById('chatArea').appendChild(messageDiv);
@@ -255,6 +280,7 @@ document.getElementById('sendButton').addEventListener('click', () => {
         console.error('Lỗi khi gửi tin nhắn:', error);
     });
 });
+
 
 socket.on('receiveMessage', (messageData) => {
     if (messageData.receiverId === currentFriendId || messageData.sender === currentFriendId) {
@@ -302,6 +328,75 @@ document.getElementById('deleteChatButton').addEventListener('click', () => {
         });
     }
 });
+
+let isLoadingMessages = false; // Để tránh tải lại nhiều lần khi đang lấy dữ liệu
+
+// Lắng nghe sự kiện cuộn (scroll)
+document.getElementById('chatArea').addEventListener('scroll', () => {
+    const chatArea = document.getElementById('chatArea');
+    
+    // Nếu người dùng cuộn đến đầu của chatArea và chưa đang tải tin nhắn
+    if (chatArea.scrollTop === 0 && !isLoadingMessages) {
+        loadOlderMessages();
+    }
+});
+
+function loadOlderMessages() {
+    isLoadingMessages = true; // Đánh dấu là đang tải dữ liệu
+
+    // Gửi yêu cầu lấy tin nhắn cũ (ví dụ: từ API hoặc WebSocket)
+    fetch(`http://localhost:5000/api/messages/${currentFriendId}?page=${currentPage + 1}`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Lỗi khi lấy tin nhắn cũ');
+        }
+        return response.json();
+    })
+    .then(messages => {
+        if (messages.length > 0) {
+            const chatArea = document.getElementById('chatArea');
+
+            // Cập nhật trang hiện tại để tải tin nhắn ở trang tiếp theo
+            currentPage++;
+
+            // Thêm tin nhắn cũ vào trước các tin nhắn hiện tại
+            messages.forEach(message => {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('message', message.sender === currentFriendId ? 'received' : 'sent');
+                
+                const fileDataUrl = message.file && message.file.data && typeof message.file.data === 'string'
+                    ? `data:${message.file.contentType};base64,${message.file.data}` 
+                    : null;
+                
+                messageDiv.innerHTML = `
+                    ${message.sender === currentFriendId ? 
+                        `<img src="${friendAvatar}" alt="${friendName}" class="avatar">` : 
+                        `<img src="" alt="Bạn" style="display: none;">`}
+                    <div class="msgContent">
+                        <div class="messageContent">
+                            <p>${message.content.replace(/\n/g, '<br>')}</p>
+                        </div>
+                        ${fileDataUrl ? `<img src="${fileDataUrl}" class="imgContent" />` : ''}
+                    </div>
+                `;
+                
+                chatArea.insertBefore(messageDiv, chatArea.firstChild); // Thêm tin nhắn vào đầu chatArea
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Lỗi khi lấy tin nhắn cũ:', error);
+    })
+    .finally(() => {
+        isLoadingMessages = false; // Đánh dấu là đã tải xong
+    });
+}
+
 
 document.getElementById('chatInput').addEventListener('keydown', (event) => {
     
