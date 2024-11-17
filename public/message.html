@@ -14,7 +14,7 @@
                 <input type="text" class="form__field" placeholder="Tìm kiếm bạn bè" name="name" id="search" required />
             </div>
             <div class="a-tag">
-                <div><a href="#" onclick="showContent('allChat', this)" class="active">Tất cả</a></div>
+                <div><a href="#" onclick="showContent('friendList', this)" class="active">Tất cả</a></div>
                 <div><a href="#" onclick="showContent('groupChat', this)">Nhóm</a></div>
                 <div><a href="#" onclick="showContent('important', this)">Quan trọng</a></div>
             </div>  
@@ -22,6 +22,30 @@
             <div class="leftContent" id="friendList">
                 <div class="loading">Đang tải danh sách bạn bè...</div>
                 
+            </div>
+            <div class="leftContent" id="groupChat" style="display: none;">
+                <div id="createGroupSection">
+                    <button onclick="showCreateGroupForm()">Tạo nhóm mới</button>
+                </div>
+
+                <div id="createGroupForm" style="display: none;">
+                    <input type="text" id="groupNameInput" placeholder="Tên nhóm">
+                    <div id="friendsListForGroup">
+                        <p>Chọn bạn bè để thêm vào nhóm:</p>
+                        <div id="friendCheckboxList">
+                        </div>
+                    </div>
+                    <button onclick="createGroup()">Tạo nhóm</button>
+                    <button onclick="hideCreateGroupForm()">Hủy</button>
+                </div>
+
+                <div id="groupList"></div>
+
+            </div>
+            
+
+            <div class="leftContent" id="important" style="display: none;">
+                <div class="loading">Đang tải các tin nhắn quan trọng...</div>
             </div>
         </div>
 
@@ -71,8 +95,6 @@
 
         <div id="sideMenu" class="side" style="display: none;">
             <div class="headerSide" id="headerSide">
-                <!-- <img src="../img/default-avatar.png" alt="Ảnh đại diện" id="headerAva"/>
-                <p>UserName</p> -->
             </div>
 
             <div class="file" id="file" >
@@ -82,8 +104,6 @@
                 <i class="fa-regular fa-trash-can"></i>
                 <p>Xóa lịch sử trò chuyện</p>
             </a>
-            
-            
         </div>
     </div>
     
@@ -97,6 +117,25 @@
 
         function videoCall() {
             alert('video call')
+        }
+
+        function showContent(contentId, element) {
+            // Ẩn tất cả các phần tử 'leftContent'
+            const contents = document.querySelectorAll('.leftContent');
+            contents.forEach(content => {
+                content.style.display = 'none';
+            });
+
+            // Hiển thị phần tử tương ứng
+            const contentToShow = document.getElementById(contentId);
+            contentToShow.style.display = 'block';
+
+            // Cập nhật lớp active
+            const links = document.querySelectorAll('.a-tag a');
+            links.forEach(link => {
+                link.classList.remove('active');
+            });
+            element.classList.add('active');
         }
     </script>
 </body>

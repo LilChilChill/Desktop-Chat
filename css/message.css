@@ -465,23 +465,6 @@ body {
   text-decoration: none;
 }
 
-/* @media only screen and ( min-width: 1280px) and (min-width:720px){
-
-  .icon{
-  position: absolute;
-  top: 95%;
-  left: 92%;
-  cursor: pointer;
-  padding: 10px;
-}
-
-.headerIcon a {
-  margin-left: 15px;
-  color: #333;
-  text-decoration: none;
-} 
-} */
-
 .three-body {
   --uib-size: 35px;
   --uib-speed: 0.8s;
