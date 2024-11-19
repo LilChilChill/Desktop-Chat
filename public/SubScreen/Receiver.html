@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Cuộc gọi thoại - Người nhận</title>
+</head>
+<body>
+    <div class="call-container">
+        <div class="call-status">
+            <p>Cuộc gọi đến từ <span id="caller-name">Tên người gọi</span></p>
+        </div>
+        <div class="caller-info">
+            <img src="avatar.png" alt="Ảnh đại diện" class="caller-avatar"/>
+        </div>
+        <div class="call-controls">
+            <button class="accept" onclick="acceptCall()">Nhận cuộc gọi</button>
+            <button class="decline" onclick="declineCall()">Từ chối cuộc gọi</button>
+        </div>
+    </div>
+
+    <script>
+        function acceptCall() {
+            alert('Cuộc gọi đã được nhận.');
+            // Thực hiện bắt đầu cuộc gọi ở đây (kết nối WebRTC, gửi tín hiệu qua socket)
+        }
+
+        function declineCall() {
+            alert('Cuộc gọi đã bị từ chối.');
+            // Thực hiện kết thúc cuộc gọi và thông báo cho người gọi
+        }
+    </script>
+</body>
+</html>

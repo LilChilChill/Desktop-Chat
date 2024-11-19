@@ -80,6 +80,8 @@
         function logout() {
         localStorage.removeItem('userId')
         localStorage.removeItem('token');
+        localStorage.removeItem('groupId');
+        // localStorage.removeItem('LoggedInUserId');
         window.location.href = 'index.html'; 
     }
     </script>

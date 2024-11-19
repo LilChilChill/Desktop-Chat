@@ -1,0 +1,61 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.call-container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    width: 300px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.call-status p {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.caller-info {
+    margin-top: 20px;
+}
+
+.caller-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.call-controls {
+    margin-top: 30px;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px;
+    margin: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 120px;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+button.decline {
+    background-color: #f44336;
+}
+
+button.decline:hover {
+    background-color: #e53935;
+}

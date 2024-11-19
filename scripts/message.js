@@ -52,7 +52,7 @@ function getFriends() {
             friends.forEach(friend => {
                 const friendAvatar = friend.avatar && friend.avatar.data && typeof friend.avatar.data === 'string'
                     ? `data:${friend.avatar.contentType};base64,${friend.avatar.data}`
-                    : null;
+                    : '../img/default-avatar.png';
 
                 const friendItem = document.createElement('div');
                 friendItem.classList.add('friend-item');
@@ -129,7 +129,8 @@ function openChat(friendId, name, avatar, page = 1) {
             friendInfo.innerHTML = ''
             fileData.innerHTML = '';
         } else {
-            messages.forEach(message => {
+            messages.forEach((message, messageData) => {
+
                 const messageDiv = document.createElement('div');
                 messageDiv.classList.add('message', message.sender === friendId ? 'received' : 'sent');
                 
@@ -151,7 +152,7 @@ function openChat(friendId, name, avatar, page = 1) {
                     <div class="msgContent">
                         <div style="display: flex; flex-direction: row; align-items: center;">
                             <div class="messageContent">
-                                <p>${message.content.replace(/\n/g, '<br>')}</p> <!-- Chuyển đổi dòng mới -->
+                                <p>${message.content.replace(/\n/g, '<br>')}</p>
                             </div>
                         </div>
                         ${fileDataUrl ? `<img src="${fileDataUrl}" class="imgContent" />` : ''}
@@ -176,8 +177,8 @@ function openChat(friendId, name, avatar, page = 1) {
                 fileData.innerHTML = `
                     <a href="#" onclick="fileToggle()"><p>File phương tiện & file</p></a>
                     <div style="display: none" id="fileDisplay">
-                        <a href="#"><p>File phương tiện</p></a>
-                        <a href="#"><p>File</p></a>
+                        <a href="#"><p>- File phương tiện</p></a>
+                        <a href="#"><p>- File</p></a>
                     </div>
                 `
 
@@ -200,6 +201,7 @@ document.getElementById('fileInput').addEventListener('change', function(event) 
 
     if (selectedFile) {
         const chatInput = document.getElementById('inputPreview');
+        const fileInput = document.getElementById('chatInput');
         
         if (selectedFile.type.startsWith('image/')) {
             chatInput.innerHTML = `<img src="${URL.createObjectURL(selectedFile)}" alt="Selected File" class="imgPreview"/>`;
@@ -292,7 +294,7 @@ socket.on('receiveMessage', (messageData) => {
         ? `data:${messageData.file.contentType};base64,${messageData.file.data}`
         : null;
 
-    const avatarUrl = messageData.sender === currentFriendId ? friendAvatar : 'path_to_user_avatar';
+    const avatarUrl = messageData.sender === currentFriendId ? friendAvatar : '../img/default-avatar.png';
 
     messageDiv.innerHTML = `
         <img src="${avatarUrl}" alt="${messageData.sender === currentFriendId ? friendName : 'Bạn'}" class="avatar">
@@ -412,12 +414,10 @@ function emojiToggle(){
     document.getElementById('emoji').style.display = document.getElementById('emoji').style.display === 'none'? 'flex' : 'none';
 }
 
-////////////////////////////////////////////////////////////////////////////
-// Hiển thị form tạo nhóm và danh sách bạn bè
+//----------------------------------------------------- GROUP CHAT -------------------------------------------------------------\\
 function showCreateGroupForm() {
     document.getElementById('createGroupForm').style.display = 'block';
 
-    // Lấy danh sách bạn bè từ API
     fetch('http://localhost:5000/api/users/friends', {
         method: 'GET',
         headers: {
@@ -427,7 +427,7 @@ function showCreateGroupForm() {
     .then(response => response.json())
     .then(friends => {
         const friendCheckboxList = document.getElementById('friendCheckboxList');
-        friendCheckboxList.innerHTML = ''; // Xóa danh sách cũ
+        friendCheckboxList.innerHTML = ''; 
 
         if (friends.length === 0) {
             friendCheckboxList.innerHTML = '<p>Không có bạn bè nào để thêm.</p>';
@@ -449,12 +449,10 @@ function showCreateGroupForm() {
     });
 }
 
-// Ẩn form tạo nhóm
 function hideCreateGroupForm() {
     document.getElementById('createGroupForm').style.display = 'none';
 }
 
-// Tạo nhóm mới và thêm bạn bè đã chọn
 function createGroup() {
     const groupName = document.getElementById('groupNameInput').value.trim();
     const selectedFriendIds = Array.from(document.querySelectorAll('#friendCheckboxList input[type="checkbox"]:checked'))
@@ -465,18 +463,15 @@ function createGroup() {
         return;
     }
 
-    if (selectedFriendIds.length === 0) {
-        alert('Vui lòng chọn ít nhất một bạn bè để thêm vào nhóm.');
+    if (selectedFriendIds.length < 2) {
+        alert('Vui lòng chọn ít nhất hai bạn bè để thêm vào nhóm.');
         return;
     }
 
-    // Lấy userId từ localStorage (người tạo nhóm)
     const userId = localStorage.getItem('userId');
 
-    // Thêm người tạo nhóm vào danh sách thành viên
-    const members = [...selectedFriendIds, userId];  // Thêm người tạo nhóm vào cuối mảng
+    const members = [...selectedFriendIds, userId];  
 
-    // Gửi yêu cầu tạo nhóm tới server
     fetch('http://localhost:5000/api/groups/create', {
         method: 'POST',
         headers: {
@@ -484,8 +479,8 @@ function createGroup() {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
         body: JSON.stringify({
-            groupName: groupName, // Tên nhóm
-            members: members      // Thành viên (bao gồm người tạo nhóm)
+            groupName: groupName, 
+            members: members      
         })
     })
     .then(response => {
@@ -501,6 +496,7 @@ function createGroup() {
             groupName,
             members: members
         });
+        loadGroupChats()
     })
     .catch(error => {
         console.error('Lỗi khi tạo nhóm:', error);
@@ -508,8 +504,6 @@ function createGroup() {
     });
 }
 
-
-// Tải danh sách nhóm chat
 function loadGroupChats() {
     const userId = localStorage.getItem('userId');
     fetch(`http://localhost:5000/api/groups/${userId}`, {
@@ -522,13 +516,12 @@ function loadGroupChats() {
     .then(groups => {
         const groupList = document.getElementById('groupList');
         
-        // Kiểm tra nếu groupList tồn tại
         if (!groupList) {
             console.error("Không tìm thấy phần tử #groupList trong DOM");
-            return;  // Nếu không tồn tại thì dừng thực thi hàm
+            return;  
         }
 
-        groupList.innerHTML = ''; // Reset danh sách nhóm cũ
+        groupList.innerHTML = ''; 
 
         if (groups.length === 0) {
             groupList.innerHTML = '<p>Không có nhóm nào.</p>';
@@ -537,11 +530,12 @@ function loadGroupChats() {
                 const groupItem = document.createElement('div');
                 groupItem.classList.add('group-item');
                 groupItem.innerHTML = `
-                    <div class="chatUser" onclick="openGroupChat('${group._id}', '${group.name}')">
+                    <div class="chatUser" onclick="openGroupChat('${group._id}', '${group.groupName}')">
                         <span>${group.groupName}</span>
                     </div>
                 `;
                 groupList.appendChild(groupItem);
+                console.log('groupName', group.groupName)
             });
         }
     })
@@ -549,17 +543,15 @@ function loadGroupChats() {
         console.error('Lỗi khi tải danh sách nhóm:', error);
         const groupList = document.getElementById('groupList');
         
-        // Kiểm tra nếu groupList tồn tại
         if (groupList) {
             groupList.innerHTML = '<p>Lỗi khi tải danh sách nhóm.</p>';
         }
     });
 }
 
-// Mở nhóm chat
 function openGroupChat(groupId, groupName) {
     document.getElementById('username').textContent = groupName;
-    currentFriendId = null; // Không áp dụng ID bạn bè trong nhóm
+    currentFriendId = null; 
 
     const chatArea = document.getElementById('chatArea');
     chatArea.innerHTML = `
@@ -571,7 +563,7 @@ function openGroupChat(groupId, groupName) {
             </div>
         </div>
     `;
-
+    localStorage.setItem('groupId', groupId)
     fetch(`http://localhost:5000/api/groups/${groupId}/messages`, {
         method: 'GET',
         headers: {

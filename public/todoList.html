@@ -50,7 +50,7 @@
                         const friendItem = document.createElement('div');
                         const friendAvatar = friend.avatar && friend.avatar.data && typeof friend.avatar.data === 'string'
                             ? `data:${friend.avatar.contentType};base64,${friend.avatar.data}`
-                            : null;
+                            : '../img/default-avatar.png';
 
                         friendItem.classList.add('friend-item');
                         friendItem.innerHTML = `

@@ -25,7 +25,8 @@
             </div>
             <div class="leftContent" id="groupChat" style="display: none;">
                 <div id="createGroupSection">
-                    <button onclick="showCreateGroupForm()">Tạo nhóm mới</button>
+                    <!-- <button >Tạo nhóm mới</button> -->
+                    <a href="#" onclick="showCreateGroupForm()"><i class="fa-solid fa-plus"></i></a>
                 </div>
 
                 <div id="createGroupForm" style="display: none;">
@@ -50,8 +51,8 @@
         </div>
 
         <div class="right">
-            <div class="header">
-                <div class="user-info">
+            <div class="header" id="group">
+                <div class="user-info" >
                     <img src="../img/default-avatar.png" alt="Ảnh đại diện" id="avatar"/>
                     <div class="user-info-status">
                         <span id="username">Tên người dùng</span> 
@@ -59,7 +60,7 @@
                     </div>
                 </div>
                 <div class="headerIcon">
-                    <a href="#" onclick="voiceCall()"><i class="fa-solid fa-phone"></i></a>
+                    <a href="#" onclick="startVoiceCall()"><i class="fa-solid fa-phone"></i></a>
                     <a href="#" onclick="videoCall()"><i class="fa-solid fa-video"></i></a>
                     <a href="#" onclick="sideMenu()"><i class="fa fa-ellipsis-h"></i></a>
                 </div>
@@ -79,7 +80,6 @@
                 <div class="chatInput">
                     <div id="inputPreview"></div>
                     <div style="display: flex; flex-direction: row; width: 100%;">
-                        <textarea id="chatInput" placeholder="Nhập tin nhắn..." ></textarea>
                         <div class="icon" id="icon">
                             <i class="fa fa-smile" onclick="emojiToggle()">
                                 <div id="emoji" style="display: none;" >
@@ -87,6 +87,7 @@
                                 </div>
                             </i>
                         </div>
+                        <textarea id="chatInput" placeholder="Nhập tin nhắn..." ></textarea>
                     </div>
                 </div>
                 <button id="sendButton"><i class="fa-solid fa-paper-plane"></i></button>
@@ -111,26 +112,15 @@
     <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
     <script src="../scripts/message.js"></script>
     <script>
-        function voiceCall() {
-            alert('voice call')
-        }
-
-        function videoCall() {
-            alert('video call')
-        }
-
         function showContent(contentId, element) {
-            // Ẩn tất cả các phần tử 'leftContent'
             const contents = document.querySelectorAll('.leftContent');
             contents.forEach(content => {
                 content.style.display = 'none';
             });
 
-            // Hiển thị phần tử tương ứng
             const contentToShow = document.getElementById(contentId);
             contentToShow.style.display = 'block';
 
-            // Cập nhật lớp active
             const links = document.querySelectorAll('.a-tag a');
             links.forEach(link => {
                 link.classList.remove('active');

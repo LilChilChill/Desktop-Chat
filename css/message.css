@@ -55,10 +55,6 @@ body {
   cursor: pointer;
 }
 
-#emoji{
-  
-}
-
 .file{
   display: flex;
   flex-direction: column;
@@ -231,7 +227,7 @@ body {
   align-items: center;
   overflow-y: hidden;
   border-width: 0;
-  margin-right: 25px;
+  /* margin-right: 25px; */
   background-color: #ccc;
 }
 
@@ -452,11 +448,12 @@ body {
 
 
 .icon{
-  position: absolute;
-  top: 91.5%;
-  left: 91%;
+  position:static;
+  display: flex;
+  align-content: center;
+  flex-wrap: wrap;
   cursor: pointer;
-  padding: 10px;
+  padding-left: 10px;
 }
 
 .headerIcon a {

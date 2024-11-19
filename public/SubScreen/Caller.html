@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Cuộc gọi thoại - Người gọi</title>
+</head>
+<body>
+    <div class="call-container">
+        <div class="call-status">
+            <p>Đang gọi...</p>
+        </div>
+        <div class="caller-info">
+            <img src="avatar.png" alt="Ảnh đại diện" class="caller-avatar"/>
+            <p id="caller-name">Tên người gọi</p>
+        </div>
+        <div class="call-controls">
+            <button class="hang-up" onclick="endCall()">Kết thúc cuộc gọi</button>
+        </div>
+    </div>
+
+    <script>
+        function endCall() {
+            alert('Cuộc gọi đã kết thúc.');
+            // Thực hiện kết thúc cuộc gọi ở đây (ngừng kết nối WebRTC, gửi thông báo qua socket)
+        }
+    </script>
+</body>
+</html>
