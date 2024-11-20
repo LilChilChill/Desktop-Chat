@@ -25,6 +25,7 @@ socket.on('disconnect', () => {
     console.log('Mất kết nối tới server.');
 });
 
+//----------------------------------------------------- PRIVATE CHAT -------------------------------------------------------------\\
 function getFriends() {
     const token = localStorage.getItem('token'); 
 
@@ -158,7 +159,7 @@ function openChat(friendId, name, avatar, page = 1) {
                             </div>
                         </div>
                         ${fileDataUrl ? `<img src="${fileDataUrl}" class="imgContent" />` : ''}
-                        <p class="msgDate">${message.date}</p>
+                        ${message.date ? ` <p class="msgDate">${message.date}</p>` : ''}
                     </div>
                     
                     <div class="chatRight">
