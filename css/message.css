@@ -108,10 +108,10 @@ body {
   justify-content: space-between;
 }
 
-.a-tag div {
+/* .a-tag div {
   flex: 1; 
   text-align: center; 
-}
+} */
 
 .a-tag a {
   display: block;
@@ -351,8 +351,7 @@ body {
 }
 
 .imgContent{
-  max-width: 60%;
-  max-height: 60%;
+  max-width: 350px;
   border-radius: 10px;
   cursor: pointer;
 }
@@ -565,3 +564,7 @@ body {
   }
  }
  
+
+.msgDate{
+  font-size: 10px;
+}

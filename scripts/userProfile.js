@@ -39,7 +39,7 @@ const displayUserInfo = (user) => {
     localStorage.setItem('userId', user._id);
     const avatarUrl = user.avatar && user.avatar.data && typeof user.avatar.data === 'string'
         ? `data:${user.avatar.contentType};base64,${user.avatar.data}`
-        : null;
+        : '../img/default-avatar.png';
 
     userInfoContainer.innerHTML = `
         <img id="userAvatar" src="${avatarUrl}" alt="Avatar" style="width: 100px; height: 100px; border-radius: 50%;">

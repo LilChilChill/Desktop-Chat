@@ -112,7 +112,9 @@ function openChat(friendId, name, avatar, page = 1) {
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
+        
     })
+    
     .then(response => {
         if (!response.ok) {
             throw new Error('Lỗi khi lấy tin nhắn');
@@ -129,8 +131,8 @@ function openChat(friendId, name, avatar, page = 1) {
             friendInfo.innerHTML = ''
             fileData.innerHTML = '';
         } else {
-            messages.forEach((message, messageData) => {
-
+            messages.forEach(message => {
+                console.log('message', message)
                 const messageDiv = document.createElement('div');
                 messageDiv.classList.add('message', message.sender === friendId ? 'received' : 'sent');
                 
@@ -156,6 +158,7 @@ function openChat(friendId, name, avatar, page = 1) {
                             </div>
                         </div>
                         ${fileDataUrl ? `<img src="${fileDataUrl}" class="imgContent" />` : ''}
+                        <p class="msgDate">${message.date}</p>
                     </div>
                     
                     <div class="chatRight">
@@ -256,7 +259,8 @@ document.getElementById('sendButton').addEventListener('click', () => {
                 name: selectedFile.name,
                 type: selectedFile.type,
                 size: selectedFile.size
-            } : null
+            } : null,
+            date: data.date
         });
         
 
@@ -271,10 +275,12 @@ document.getElementById('sendButton').addEventListener('click', () => {
             <div class="msgContent">
                 <div class="messageContent">
                     <p>${data.messageData.content.replace(/\n/g, '<br>')}</p>
-                </div>
+                    </div>
                 ${fileDataUrl ? `<img src="${fileDataUrl}" class="imgContent" />` : ''}
+                <p class="msgDate">${data.messageData.date}</p>
             </div>
         `; 
+        console.log('time', data.messageData.date)
         document.getElementById('chatArea').appendChild(messageDiv);
         chatArea.scrollTop = chatArea.scrollHeight; 
         
@@ -532,6 +538,7 @@ function loadGroupChats() {
                 groupItem.innerHTML = `
                     <div class="chatUser" onclick="openGroupChat('${group._id}', '${group.groupName}')">
                         <span>${group.groupName}</span>
+                        <p>Side</p>
                     </div>
                 `;
                 groupList.appendChild(groupItem);
@@ -551,6 +558,7 @@ function loadGroupChats() {
 
 function openGroupChat(groupId, groupName) {
     document.getElementById('username').textContent = groupName;
+    // document.getElementById('avatar') = defaultAvatar;
     currentFriendId = null; 
 
     const chatArea = document.getElementById('chatArea');
