@@ -14,7 +14,7 @@ const getUserInfo = async () => {
     }
 
     try {
-        const res = await fetch('https://server-57ql.onrender.com/api/users/me', {
+        const res = await fetch('http://localhost:5000/api/users/me', {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -101,7 +101,7 @@ saveButton.addEventListener('click', async () => {
     }
 
     try {
-        const res = await fetch('https://server-57ql.onrender.com/api/users/update', {
+        const res = await fetch('http://localhost:5000/api/users/update', {
             method: 'PUT',
             headers: {
                 'Authorization': `Bearer ${token}`

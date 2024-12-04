@@ -568,3 +568,41 @@ body {
 .msgDate{
   font-size: 10px;
 }
+
+
+.popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  z-index: 1000;
+  border-radius: 8px;
+  width: 300px;
+  text-align: center;
+}
+
+.popup-content p {
+  margin: 0;
+  padding: 10px 0;
+  font-size: 18px;
+}
+
+.popup-buttons button {
+  margin: 5px;
+  padding: 10px 15px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.popup-buttons button:hover {
+  background-color: #f0f0f0;
+}
+
+#endCallSection button {
+  margin-top: 20px;
+  background-color: red;
+  color: white;
+}

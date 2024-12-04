@@ -1,9 +1,128 @@
-const socket = io('https://server-57ql.onrender.com');
+const socket = io('http://localhost:5000');
 let currentFriendId = null;
 let selectedFile = null;
 let friendAvatar = null;
 let friendName = null; 
 let currentPage = 1;
+
+
+let localStream;
+let peerConnection;
+
+// Cấu hình STUN server
+const configuration = {
+    iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
+};
+
+// Khởi tạo voice call
+async function startVoiceCall() {
+    try {
+        // Yêu cầu truy cập microphone
+        localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        
+        // Tạo PeerConnection
+        peerConnection = new RTCPeerConnection(configuration);
+        
+        // Thêm luồng âm thanh vào kết nối
+        localStream.getTracks().forEach(track => {
+            peerConnection.addTrack(track, localStream);
+        });
+
+        // Nghe ICE candidates từ local peer
+        peerConnection.onicecandidate = event => {
+            if (event.candidate) {
+                sendSignal('new-ice-candidate', event.candidate);
+            }
+        };
+
+        // Khi nhận remote stream, phát âm thanh
+        peerConnection.ontrack = event => {
+            const audioElement = document.createElement('audio');
+            audioElement.srcObject = event.streams[0];
+            audioElement.autoplay = true;
+            document.body.appendChild(audioElement);
+        };
+
+        // Tạo offer SDP
+        const offer = await peerConnection.createOffer();
+        await peerConnection.setLocalDescription(offer);
+
+        // Gửi offer đến peer khác
+        sendSignal('voice-call-offer', offer);
+
+    } catch (error) {
+        console.error('Lỗi khi bắt đầu voice call:', error);
+    }
+}
+
+// Nhận và xử lý tín hiệu từ peer
+function handleSignal(type, data) {
+    switch (type) {
+        case 'voice-call-offer':
+            handleOffer(data);
+            break;
+        case 'voice-call-answer':
+            handleAnswer(data);
+            break;
+        case 'new-ice-candidate':
+            handleNewICECandidate(data);
+            break;
+    }
+}
+
+// Xử lý offer nhận được
+async function handleOffer(offer) {
+    try {
+        peerConnection = new RTCPeerConnection(configuration);
+        
+        peerConnection.onicecandidate = event => {
+            if (event.candidate) {
+                sendSignal('new-ice-candidate', event.candidate);
+            }
+        };
+
+        peerConnection.ontrack = event => {
+            const audioElement = document.createElement('audio');
+            audioElement.srcObject = event.streams[0];
+            audioElement.autoplay = true;
+            document.body.appendChild(audioElement);
+        };
+
+        await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
+
+        localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        localStream.getTracks().forEach(track => {
+            peerConnection.addTrack(track, localStream);
+        });
+
+        const answer = await peerConnection.createAnswer();
+        await peerConnection.setLocalDescription(answer);
+
+        sendSignal('voice-call-answer', answer);
+    } catch (error) {
+        console.error('Lỗi xử lý offer:', error);
+    }
+}
+
+// Xử lý answer từ remote peer
+async function handleAnswer(answer) {
+    await peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
+}
+
+// Xử lý ICE candidate mới
+function handleNewICECandidate(candidate) {
+    const newCandidate = new RTCIceCandidate(candidate);
+    peerConnection.addIceCandidate(newCandidate).catch(e => console.error(e));
+}
+
+// Hàm giả lập gửi tín hiệu (thay bằng socket hoặc WebRTC signaling thực tế)
+function sendSignal(type, data) {
+    socket.emit('signal', { type, data }); // Sử dụng socket.io hoặc WebSocket
+}
+
+socket.on('signal', ({ type, data }) => {
+    handleSignal(type, data);
+});
 
 socket.on('connect', () => {
     const userId = localStorage.getItem('userId');
@@ -35,7 +154,7 @@ function getFriends() {
         return;
     }
 
-    fetch('https://server-57ql.onrender.com/api/users/friends', {
+    fetch('http://localhost:5000/api/users/friends', {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -107,7 +226,7 @@ function openChat(friendId, name, avatar, page = 1) {
     const fileData = document.getElementById('file');
     fileData.innerHTML = '';
 
-    fetch(`https://server-57ql.onrender.com/api/messages/${friendId}?page=${page}`, {
+    fetch(`http://localhost:5000/api/messages/${friendId}?page=${page}`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -224,7 +343,7 @@ document.getElementById('sendButton').addEventListener('click', () => {
         messageData.append('file', selectedFile); 
     }
 
-    fetch('https://server-57ql.onrender.com/api/messages', {
+    fetch('http://localhost:5000/api/messages', {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -310,7 +429,7 @@ socket.on('receiveMessage', (messageData) => {
 
 document.getElementById('deleteChatButton').addEventListener('click', () => {
     if (confirm('Bạn có chắc chắn muốn xóa toàn bộ lịch sử chat không?')) {
-        fetch(`https://server-57ql.onrender.com/api/messages/delete/${currentFriendId}`, {
+        fetch(`http://localhost:5000/api/messages/delete/${currentFriendId}`, {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -340,7 +459,7 @@ document.getElementById('chatArea').addEventListener('scroll', () => {
 
 function loadOlderMessages() {
     isLoadingMessages = true;
-    fetch(`https://server-57ql.onrender.com/api/messages/${currentFriendId}?page=${currentPage + 1}`, {
+    fetch(`http://localhost:5000/api/messages/${currentFriendId}?page=${currentPage + 1}`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -431,7 +550,7 @@ getFriends();
 function showCreateGroupForm() {
     document.getElementById('createGroupForm').style.display = 'block';
 
-    fetch('https://server-57ql.onrender.com/api/users/friends', {
+    fetch('http://localhost:5000/api/users/friends', {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -485,7 +604,7 @@ function createGroup() {
 
     const members = [...selectedFriendIds, userId];  
 
-    fetch('https://server-57ql.onrender.com/api/groups/create', {
+    fetch('http://localhost:5000/api/groups/create', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -519,7 +638,7 @@ function createGroup() {
 
 function loadGroupChats() {
     const userId = localStorage.getItem('userId');
-    fetch(`https://server-57ql.onrender.com/api/groups/${userId}`, {
+    fetch(`http://localhost:5000/api/groups/${userId}`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -579,7 +698,7 @@ function openGroupChat(groupId, groupName) {
         </div>
     `;
     localStorage.setItem('groupId', groupId)
-    fetch(`https://server-57ql.onrender.com/api/groups/${groupId}/messages`, {
+    fetch(`http://localhost:5000/api/groups/${groupId}/messages`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
