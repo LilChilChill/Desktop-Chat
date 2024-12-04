@@ -18,7 +18,7 @@ const signUpButton = document.getElementById('signUp');
       const password = document.getElementById('password').value;
 
       try {
-        const res = await fetch('http://localhost:5000/api/users/register', {
+        const res = await fetch('https://server-57ql.onrender.com/api/users/register', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -46,7 +46,7 @@ const signUpButton = document.getElementById('signUp');
       const password = document.getElementById('signInPassword').value;
 
       try {
-        const res = await fetch('http://localhost:5000/api/users/login', {
+        const res = await fetch('https://server-57ql.onrender.com/api/users/login', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

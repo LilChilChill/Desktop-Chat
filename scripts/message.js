@@ -1,4 +1,4 @@
-const socket = io('http://localhost:5000');
+const socket = io('https://server-57ql.onrender.com');
 let currentFriendId = null;
 let selectedFile = null;
 let friendAvatar = null;
@@ -35,7 +35,7 @@ function getFriends() {
         return;
     }
 
-    fetch('http://localhost:5000/api/users/friends', {
+    fetch('https://server-57ql.onrender.com/api/users/friends', {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -107,7 +107,7 @@ function openChat(friendId, name, avatar, page = 1) {
     const fileData = document.getElementById('file');
     fileData.innerHTML = '';
 
-    fetch(`http://localhost:5000/api/messages/${friendId}?page=${page}`, {
+    fetch(`https://server-57ql.onrender.com/api/messages/${friendId}?page=${page}`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -130,16 +130,16 @@ function openChat(friendId, name, avatar, page = 1) {
                 let lastMessageDate = null;
 
                 messages.forEach(message => {
-                    const messageDate = new Date(message.date).toLocaleDateString();
+                    // const messageDate = new Date(message.date).toLocaleDateString();
 
-                    // Thêm date separator nếu ngày thay đổi
-                    if (lastMessageDate !== messageDate) {
-                        const dateSeparator = document.createElement('div');
-                        dateSeparator.classList.add('date-separator');
-                        dateSeparator.textContent = messageDate;
-                        chatArea.appendChild(dateSeparator);
-                        lastMessageDate = messageDate;
-                    }
+                    // // Thêm date separator nếu ngày thay đổi
+                    // if (lastMessageDate !== messageDate) {
+                    //     const dateSeparator = document.createElement('div');
+                    //     dateSeparator.classList.add('date-separator');
+                    //     dateSeparator.textContent = messageDate;
+                    //     chatArea.appendChild(dateSeparator);
+                    //     lastMessageDate = messageDate;
+                    // }
 
                     const messageDiv = document.createElement('div');
                     messageDiv.classList.add('message', message.sender === friendId ? 'received' : 'sent');
@@ -158,9 +158,9 @@ function openChat(friendId, name, avatar, page = 1) {
                                 <p>${message.content.replace(/\n/g, '<br>')}</p>
                             </div>
                             ${fileDataUrl ? `<img src="${fileDataUrl}" class="imgContent" />` : ''}
-                            ${message.date ? `<p class="msgDate">${message.date}</p>` : ''}
-                        </div>
-                    `;
+                            </div>
+                            `;
+                            // ${message.date ? `<p class="msgDate">${message.date}</p>` : ''}
 
                     chatArea.appendChild(messageDiv);
                 });
@@ -208,7 +208,7 @@ document.getElementById('sendButton').addEventListener('click', () => {
         messageData.append('file', selectedFile); 
     }
 
-    fetch('http://localhost:5000/api/messages', {
+    fetch('https://server-57ql.onrender.com/api/messages', {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -253,9 +253,9 @@ document.getElementById('sendButton').addEventListener('click', () => {
                     <p>${data.messageData.content.replace(/\n/g, '<br>')}</p>
                     </div>
                 ${fileDataUrl ? `<img src="${fileDataUrl}" class="imgContent" />` : ''}
-                <p class="msgDate">${data.messageData.date}</p>
-            </div>
-        `; 
+                </div>
+                `; 
+                // <p class="msgDate">${data.messageData.date}</p>
         console.log('time', data.messageData.date)
         document.getElementById('chatArea').appendChild(messageDiv);
         chatArea.scrollTop = chatArea.scrollHeight; 
@@ -294,7 +294,7 @@ socket.on('receiveMessage', (messageData) => {
 
 document.getElementById('deleteChatButton').addEventListener('click', () => {
     if (confirm('Bạn có chắc chắn muốn xóa toàn bộ lịch sử chat không?')) {
-        fetch(`http://localhost:5000/api/messages/delete/${currentFriendId}`, {
+        fetch(`https://server-57ql.onrender.com/api/messages/delete/${currentFriendId}`, {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -324,7 +324,7 @@ document.getElementById('chatArea').addEventListener('scroll', () => {
 
 function loadOlderMessages() {
     isLoadingMessages = true;
-    fetch(`http://localhost:5000/api/messages/${currentFriendId}?page=${currentPage + 1}`, {
+    fetch(`https://server-57ql.onrender.com/api/messages/${currentFriendId}?page=${currentPage + 1}`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -345,16 +345,15 @@ function loadOlderMessages() {
                 let lastMessageDate = null;
 
                 messages.forEach(message => {
-                    const messageDate = new Date(message.date).toLocaleDateString();
+                    // const messageDate = new Date(message.date).toLocaleDateString();
 
-                    // Thêm date separator nếu ngày thay đổi
-                    if (lastMessageDate !== messageDate) {
-                        const dateSeparator = document.createElement('div');
-                        dateSeparator.classList.add('date-separator');
-                        dateSeparator.textContent = messageDate;
-                        chatArea.insertBefore(dateSeparator, chatArea.firstChild);
-                        lastMessageDate = messageDate;
-                    }
+                    // if (lastMessageDate !== messageDate) {
+                    //     const dateSeparator = document.createElement('div');
+                    //     dateSeparator.classList.add('date-separator');
+                    //     dateSeparator.textContent = messageDate;
+                    //     chatArea.insertBefore(dateSeparator, chatArea.firstChild);
+                    //     lastMessageDate = messageDate;
+                    // }
 
                     const messageDiv = document.createElement('div');
                     messageDiv.classList.add('message', message.sender === currentFriendId ? 'received' : 'sent');
@@ -416,7 +415,7 @@ getFriends();
 function showCreateGroupForm() {
     document.getElementById('createGroupForm').style.display = 'block';
 
-    fetch('http://localhost:5000/api/users/friends', {
+    fetch('https://server-57ql.onrender.com/api/users/friends', {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -470,7 +469,7 @@ function createGroup() {
 
     const members = [...selectedFriendIds, userId];  
 
-    fetch('http://localhost:5000/api/groups/create', {
+    fetch('https://server-57ql.onrender.com/api/groups/create', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -504,7 +503,7 @@ function createGroup() {
 
 function loadGroupChats() {
     const userId = localStorage.getItem('userId');
-    fetch(`http://localhost:5000/api/groups/${userId}`, {
+    fetch(`https://server-57ql.onrender.com/api/groups/${userId}`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -564,7 +563,7 @@ function openGroupChat(groupId, groupName) {
         </div>
     `;
     localStorage.setItem('groupId', groupId)
-    fetch(`http://localhost:5000/api/groups/${groupId}/messages`, {
+    fetch(`https://server-57ql.onrender.com/api/groups/${groupId}/messages`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
