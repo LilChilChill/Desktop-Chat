@@ -6,8 +6,10 @@ ipcMain.handle('sign-up', async (event, email, password, name) => {
 });
 function createWindow() {
     const mainWindow = new BrowserWindow({
-        minWidth: 1280,
-        minHeight: 720,
+        // minWidth: 1280,
+        // minHeight: 720,
+        minWidth: 1024,
+        minHeight: 768,
         webPreferences: {
             nodeIntegration: true
         }

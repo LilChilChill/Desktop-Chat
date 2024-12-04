@@ -161,6 +161,22 @@ function openChat(friendId, name, avatar, page = 1) {
                             </div>
                             `;
                             // ${message.date ? `<p class="msgDate">${message.date}</p>` : ''}
+                            
+                            friendInfo.innerHTML = `
+                                <img src="${friendAvatar}" alt="Ảnh đại diện" id="headerAva"/>
+                                <p>${friendName}</p>
+                                <div>
+                                    <a href="#"><i class="fa-solid fa-bell"></i></a>
+                                    <a href="#"><i class="fa-solid fa-magnifying-glass"></i></a>
+                                </div>
+                            `
+                            fileData.innerHTML = `
+                                <a href="#" onclick="fileToggle()"><p>File phương tiện & file</p></a>
+                                <div style="display: none" id="fileDisplay">
+                                    <a href="#"><p>- File phương tiện</p></a>
+                                    <a href="#"><p>- File</p></a>
+                                </div>
+                            `
 
                     chatArea.appendChild(messageDiv);
                 });
